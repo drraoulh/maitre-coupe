@@ -124,6 +124,23 @@ export function createSupabaseApi(url: string, key: string): Api {
       check(await sb.from('appointments').update({ status }).eq('id', id))
     },
 
+    async getAppointmentWithPin(id, pin) {
+      const r = check(await sb.rpc('appointment_for_validation', { appt_id: id, p: pin })) as { error?: string; appointment?: Appointment }
+      if (r.error || !r.appointment) throw new Error(r.error ?? 'Rendez-vous introuvable.')
+      return r.appointment
+    },
+    async setStatusWithPin(id, pin, status) {
+      const r = check(await sb.rpc('validate_appointment', { appt_id: id, p: pin, new_status: status })) as { error?: string; appointment?: Appointment }
+      if (r.error || !r.appointment) throw new Error(r.error ?? 'Action impossible.')
+      return r.appointment
+    },
+    async setValidationPin(pin) {
+      check(await sb.rpc('set_validation_pin', { p: pin }))
+    },
+    async hasValidationPin() {
+      return !!check(await sb.rpc('has_validation_pin'))
+    },
+
     async listPosts() {
       const me = await userId()
       const rows = check(

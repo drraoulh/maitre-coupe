@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
-import { DEMO_ADMIN } from '../lib/demoApi'
+import { DEMO_ADMIN, DEMO_PIN } from '../lib/demoApi'
 import { errorMessage } from '../lib/utils'
 
 export default function Login() {
@@ -89,6 +89,7 @@ export default function Login() {
           <div className="demo-hint">
             <strong>Mode démo — compte administrateur :</strong>
             <span>{DEMO_ADMIN.email} / {DEMO_ADMIN.password}</span>
+            <span>Code de validation du salon : {DEMO_PIN}</span>
             <button
               type="button"
               className="btn btn-ghost btn-sm"

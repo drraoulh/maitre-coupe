@@ -6,7 +6,7 @@ import { useLoad } from '../lib/useLoad'
 import { EXTRAS, UNIVERS, sortCategories } from '../lib/univers'
 import {
   availableSlots, bookingRef, calendarFile, dayPart, errorMessage, formatDate, formatDuration, formatPrice, hoursFor,
-  normalizeCameroonPhone, salonBookingMessage, toISODate, whatsappLink,
+  normalizeCameroonPhone, salonBookingMessage, toISODate, toMinutes, whatsappLink,
 } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Spinner } from '../components/ui'
@@ -74,7 +74,16 @@ export default function Booking() {
 
   // Premier jour ouvert proposé automatiquement dès qu'un soin est choisi.
   useEffect(() => {
-    if (service && !date) setDate(days.find((d) => !hoursFor(settings, d).closed) ?? '')
+    if (!service || date) return
+    const now = new Date()
+    const nowMin = now.getHours() * 60 + now.getMinutes()
+    // On saute aujourd'hui si le salon ferme dans moins de 30 minutes.
+    const first = days.find((d, i) => {
+      const h = hoursFor(settings, d)
+      if (h.closed) return false
+      return i > 0 || toMinutes(h.close) - nowMin > 30 + service.duration
+    })
+    setDate(first ?? '')
   }, [service, date, days, settings])
 
   function loadBusy(d: string) {

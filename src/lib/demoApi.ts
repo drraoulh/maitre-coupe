@@ -31,6 +31,7 @@ interface StoredComment {
 }
 
 export const DEMO_ADMIN = { email: 'admin@maitre-coupe.com', password: 'admin123' }
+export const DEMO_PIN = '1234'
 
 const KEY = 'mc_demo_v3_'
 
@@ -102,6 +103,23 @@ export function createDemoApi(): Api {
   const author = (id: string) => {
     const u = users().find((x) => x.id === id)
     return { id, full_name: u?.full_name ?? 'Utilisateur', avatar_url: u?.avatar_url ?? null, role: u?.role ?? 'client' as const }
+  }
+
+  // Même protection que Supabase : blocage après 10 codes faux.
+  let failed = 0
+  let lockedUntil = 0
+  const checkPin = (pin: string) => {
+    if (Date.now() < lockedUntil) throw new Error('Trop d’essais. Réessayez dans quelques minutes.')
+    if (pin === read<string>('pin', DEMO_PIN)) {
+      failed = 0
+      return
+    }
+    failed += 1
+    if (failed >= 10) {
+      failed = 0
+      lockedUntil = Date.now() + 15 * 60_000
+    }
+    throw new Error('Code incorrect.')
   }
 
   return {
@@ -238,6 +256,31 @@ export function createDemoApi(): Api {
       if (!a) throw new Error('Rendez-vous introuvable.')
       if (u.role !== 'admin' && (a.user_id !== u.id || status !== 'cancelled')) throw new Error('Action non autorisée.')
       write('appointments', all.map((x) => (x.id === id ? { ...x, status } : x)))
+    },
+
+    async getAppointmentWithPin(id, pin) {
+      checkPin(pin)
+      const a = read<Appointment[]>('appointments', []).find((x) => x.id === id)
+      if (!a) throw new Error('Rendez-vous introuvable.')
+      return delay(a)
+    },
+    async setStatusWithPin(id, pin, status) {
+      checkPin(pin)
+      const all = read<Appointment[]>('appointments', [])
+      const a = all.find((x) => x.id === id)
+      if (!a) throw new Error('Rendez-vous introuvable.')
+      const updated = { ...a, status }
+      write('appointments', all.map((x) => (x.id === id ? updated : x)))
+      return updated
+    },
+    async setValidationPin(pin) {
+      requireAdmin()
+      if (pin.length < 4) throw new Error('Le code doit contenir au moins 4 caractères.')
+      write('pin', pin)
+    },
+    async hasValidationPin() {
+      requireAdmin()
+      return !!read<string>('pin', DEMO_PIN)
     },
 
     async listPosts() {

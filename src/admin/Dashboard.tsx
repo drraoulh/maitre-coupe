@@ -50,7 +50,7 @@ export default function Dashboard() {
     e.preventDefault()
     const wanted = code.trim().toUpperCase().replace(/^MC-?/, '')
     const hit = all.find((a) => bookingRef(a.id).replace('MC-', '') === wanted)
-    if (hit) navigate(`/admin/valider/${hit.id}`)
+    if (hit) navigate(`/valider/${hit.id}`)
     else setCodeErr('Aucun rendez-vous avec ce code.')
   }
 

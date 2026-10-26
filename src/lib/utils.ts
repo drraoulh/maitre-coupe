@@ -226,6 +226,6 @@ export function salonBookingMessage(
     `📞 Tél : ${a.client_phone}`,
   ]
   if (a.note) lines.push(`📝 ${a.note}`)
-  lines.push('', `✅ Valider le rendez-vous : ${opts.origin}/admin/valider/${a.id}`)
+  lines.push('', `✅ Pour le salon — valider avec le code du salon : ${opts.origin}/valider/${a.id}`)
   return lines.join('\n')
 }

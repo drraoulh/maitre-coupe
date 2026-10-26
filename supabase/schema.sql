@@ -189,6 +189,94 @@ language sql stable security definer set search_path = public as $$
 $$;
 grant execute on function public.busy_slots(date) to anon, authenticated;
 
+-- ---------- Code de validation du salon ----------
+-- Le personnel valide les réservations depuis le lien WhatsApp avec un code secret,
+-- sans compte. Le code est stocké chiffré dans une table illisible depuis le site.
+create extension if not exists pgcrypto with schema extensions;
+
+create table if not exists public.salon_secrets (
+  id int primary key default 1 check (id = 1),
+  pin_hash text,
+  failed int not null default 0,
+  locked_until timestamptz
+);
+insert into public.salon_secrets (id) values (1) on conflict do nothing;
+alter table public.salon_secrets enable row level security; -- aucune règle : personne ne la lit via l'API
+
+create or replace function public.set_validation_pin(p text) returns void
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not public.is_admin() then raise exception 'Réservé à l''administrateur.'; end if;
+  if p is null or length(p) < 4 then raise exception 'Le code doit contenir au moins 4 caractères.'; end if;
+  update public.salon_secrets set pin_hash = crypt(p, gen_salt('bf')), failed = 0, locked_until = null where id = 1;
+end;
+$$;
+
+create or replace function public.has_validation_pin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select public.is_admin() and exists (select 1 from public.salon_secrets where id = 1 and pin_hash is not null);
+$$;
+
+-- Vérifie le code ; 10 erreurs => blocage 15 minutes. Renvoie un message d'erreur, ou null si le code est bon.
+-- (Pas d'exception : elle annulerait le compteur d'erreurs.)
+create or replace function public.check_validation_pin(p text) returns text
+language plpgsql security definer set search_path = public, extensions as $$
+declare
+  s public.salon_secrets;
+begin
+  select * into s from public.salon_secrets where id = 1 for update;
+  if s.pin_hash is null then return 'Le gérant n''a pas encore choisi de code de validation.'; end if;
+  if s.locked_until is not null and s.locked_until > now() then
+    return 'Trop d''essais. Réessayez dans quelques minutes.';
+  end if;
+  if crypt(coalesce(p, ''), s.pin_hash) = s.pin_hash then
+    update public.salon_secrets set failed = 0, locked_until = null where id = 1;
+    return null;
+  end if;
+  update public.salon_secrets
+    set failed = case when s.failed + 1 >= 10 then 0 else s.failed + 1 end,
+        locked_until = case when s.failed + 1 >= 10 then now() + interval '15 minutes' else null end
+    where id = 1;
+  return 'Code incorrect.';
+end;
+$$;
+
+create or replace function public.appointment_for_validation(appt_id uuid, p text) returns json
+language plpgsql security definer set search_path = public as $$
+declare
+  err text := public.check_validation_pin(p);
+  r json;
+begin
+  if err is not null then return json_build_object('error', err); end if;
+  select row_to_json(a) into r from public.appointments a where a.id = appt_id;
+  if r is null then return json_build_object('error', 'Rendez-vous introuvable.'); end if;
+  return json_build_object('appointment', r);
+end;
+$$;
+
+create or replace function public.validate_appointment(appt_id uuid, p text, new_status text) returns json
+language plpgsql security definer set search_path = public as $$
+declare
+  err text := public.check_validation_pin(p);
+  r json;
+begin
+  if err is not null then return json_build_object('error', err); end if;
+  if new_status not in ('confirmed', 'cancelled', 'pending') then
+    return json_build_object('error', 'Statut invalide.');
+  end if;
+  update public.appointments set status = new_status where id = appt_id;
+  select row_to_json(a) into r from public.appointments a where a.id = appt_id;
+  if r is null then return json_build_object('error', 'Rendez-vous introuvable.'); end if;
+  return json_build_object('appointment', r);
+end;
+$$;
+
+revoke execute on function public.check_validation_pin(text) from public, anon, authenticated;
+grant execute on function public.appointment_for_validation(uuid, text) to anon, authenticated;
+grant execute on function public.validate_appointment(uuid, text, text) to anon, authenticated;
+grant execute on function public.set_validation_pin(text) to authenticated;
+grant execute on function public.has_validation_pin() to authenticated;
+
 -- ---------- Communauté ----------
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
@@ -251,4 +339,6 @@ create policy "envoyer une image" on storage.objects for insert to authenticated
 --  Après avoir créé VOTRE compte sur le site, donnez-vous le rôle admin :
 --
 --    update public.profiles set role = 'admin' where email = 'votre@email.com';
+--
+--  Puis, connecté en admin sur le site : Paramètres > « Code de validation du salon ».
 -- =====================================================================

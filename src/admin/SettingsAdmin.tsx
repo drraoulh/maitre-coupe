@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { DAY_NAMES, errorMessage } from '../lib/utils'
@@ -9,6 +9,23 @@ export default function SettingsAdmin() {
   const { settings, setSettings, toast } = useApp()
   const [f, setF] = useState<Settings>(settings)
   const [busy, setBusy] = useState(false)
+  const [pin, setPin] = useState('')
+  const [hasPin, setHasPin] = useState<boolean | null>(null)
+  useEffect(() => {
+    api.hasValidationPin().then(setHasPin).catch(() => setHasPin(null))
+  }, [])
+
+  async function savePin() {
+    try {
+      await api.setValidationPin(pin.trim())
+      setPin('')
+      setHasPin(true)
+      toast('Code de validation enregistré')
+    } catch (err) {
+      toast(errorMessage(err), 'error')
+    }
+  }
+
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => setF((x) => ({ ...x, [k]: v }))
   const setDay = (d: number, patch: Partial<DayHours>) =>
     setF((x) => ({ ...x, hours: x.hours.map((h, i) => (i === d ? { ...h, ...patch } : h)) }))
@@ -89,6 +106,22 @@ export default function SettingsAdmin() {
             <span className="label">Nombre d’avis Google</span>
             <input type="number" min={0} value={f.google_reviews} onChange={(e) => set('google_reviews', Number(e.target.value))} />
           </label>
+        </div>
+      </section>
+
+      <section className="card card-pad">
+        <h2>Code de validation du salon</h2>
+        <p className="muted small">
+          Quand un client réserve, le salon reçoit un message WhatsApp avec un lien. La personne du salon ouvre le lien et tape
+          ce code pour valider le rendez-vous, sans avoir besoin de compte. Ne le donnez qu’au personnel.
+        </p>
+        <p className="small">
+          État : {hasPin === null ? '…' : hasPin ? <strong className="text-ok">code défini ✓</strong> : <strong className="error-text">aucun code — à définir</strong>}
+          {api.mode === 'demo' && <span className="muted"> (mode démo : code par défaut 1234)</span>}
+        </p>
+        <div className="pin-row">
+          <input type="password" inputMode="numeric" autoComplete="new-password" placeholder="Nouveau code (4 à 8 chiffres)" value={pin} onChange={(e) => setPin(e.target.value)} />
+          <button type="button" className="btn btn-gold btn-sm" disabled={pin.trim().length < 4} onClick={savePin}>Enregistrer le code</button>
         </div>
       </section>
 

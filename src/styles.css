@@ -3442,3 +3442,38 @@ body:has(.admin) {
 .summary strong {
   text-align: right;
 }
+
+.pin-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pin-input {
+  text-align: center;
+  font-size: 1.8rem;
+  letter-spacing: 0.4em;
+  font-weight: 700;
+  padding: 14px;
+}
+
+.pin-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pin-row input {
+  flex: 1 1 200px;
+  width: auto;
+}
+
+.text-ok {
+  color: var(--green);
+}
+
+.pin-form .check {
+  text-align: left;
+  align-items: flex-start;
+}

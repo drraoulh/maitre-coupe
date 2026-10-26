@@ -34,6 +34,12 @@ export interface Api {
   listAppointments(): Promise<Appointment[]> // admin : tous ; client : les siens
   updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<void>
 
+  // Validation par le personnel du salon, sans compte, avec le code du salon
+  getAppointmentWithPin(id: string, pin: string): Promise<Appointment>
+  setStatusWithPin(id: string, pin: string, status: AppointmentStatus): Promise<Appointment>
+  setValidationPin(pin: string): Promise<void> // admin
+  hasValidationPin(): Promise<boolean> // admin
+
   // Communauté
   listPosts(): Promise<Post[]>
   createPost(input: { content: string; image_url: string | null }): Promise<void>

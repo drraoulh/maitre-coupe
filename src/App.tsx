@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { RequireAdmin, RequireUser } from './components/Guards'
 import Home from './pages/Home'
@@ -17,7 +17,7 @@ import ServicesAdmin from './admin/ServicesAdmin'
 import GalleryAdmin from './admin/GalleryAdmin'
 import PostsAdmin from './admin/PostsAdmin'
 import SettingsAdmin from './admin/SettingsAdmin'
-import Validate from './admin/Validate'
+import Validate from './pages/Validate'
 
 export default function App() {
   return (
@@ -29,6 +29,7 @@ export default function App() {
         <Route path="salon" element={<Salon />} />
         <Route path="reserver" element={<Booking />} />
         <Route path="communaute" element={<Community />} />
+        <Route path="valider/:id" element={<Validate />} />
         <Route path="connexion" element={<Login />} />
         <Route path="mon-espace" element={<RequireUser><Account /></RequireUser>} />
         <Route path="*" element={<NotFound />} />
@@ -40,8 +41,14 @@ export default function App() {
         <Route path="coiffures" element={<GalleryAdmin />} />
         <Route path="publications" element={<PostsAdmin />} />
         <Route path="parametres" element={<SettingsAdmin />} />
-        <Route path="valider/:id" element={<Validate />} />
+        <Route path="valider/:id" element={<OldValidateLink />} />
       </Route>
     </Routes>
   )
+}
+
+/** Ancien lien (/admin/valider/…) : redirige vers la page de validation publique. */
+function OldValidateLink() {
+  const { id } = useParams()
+  return <Navigate to={`/valider/${id}`} replace />
 }
