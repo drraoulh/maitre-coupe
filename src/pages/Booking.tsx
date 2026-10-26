@@ -24,7 +24,7 @@ export default function Booking() {
   const [busy, setBusy] = useState<BusySlot[] | null>(null)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [note, setNote] = useState(params.get('style') ? `Coiffure souhaitée : ${params.get('style')}` : '')
+  const [note, setNote] = useState(params.get('style') ? `Modèle souhaité : ${params.get('style')}` : '')
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState<Appointment | null>(null)
 
@@ -126,9 +126,22 @@ export default function Booking() {
 
       <form onSubmit={submit} className="booking">
         <section className="step">
-          <h2><span className="step-num">1</span> Choisissez une prestation</h2>
+          <h2><span className="step-num">1</span> Choisissez un soin</h2>
           {services.loading ? (
             <Spinner />
+          ) : active.length === 0 ? (
+            <div className="card card-pad">
+              <p>La réservation en ligne ouvre très bientôt.</p>
+              <p className="muted small">En attendant, réservez directement auprès du salon :</p>
+              <div className="about-actions">
+                {settings.whatsapp && (
+                  <a className="btn btn-whatsapp" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, je souhaite prendre rendez-vous.`)} target="_blank" rel="noreferrer">
+                    <Icon name="whatsapp" /> WhatsApp
+                  </a>
+                )}
+                <a className="btn btn-outline" href={`tel:${settings.phone.replace(/\s/g, '')}`}><Icon name="phone" /> {settings.phone}</a>
+              </div>
+            </div>
           ) : (
             <div className="choice-list">
               {active.map((s) => (
@@ -188,16 +201,16 @@ export default function Booking() {
           <div className="form-grid">
             <label className="field">
               <span className="label">Nom complet</span>
-              <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex. Grâce Mabiala" disabled={!time} />
+              <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex. Grâce Mballa" disabled={!time} />
             </label>
             <label className="field">
               <span className="label">Téléphone / WhatsApp</span>
-              <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+242 06 …" disabled={!time} />
+              <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+237 6XX XX XX XX" disabled={!time} />
             </label>
           </div>
           <label className="field">
             <span className="label">Précisions (facultatif)</span>
-            <textarea rows={3} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Longueur des tresses, coiffeur préféré…" disabled={!time} />
+            <textarea rows={3} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Modèle souhaité, longueur, préférence…" disabled={!time} />
           </label>
         </section>
 

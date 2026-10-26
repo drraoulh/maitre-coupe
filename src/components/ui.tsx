@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from './Icon'
-import { initials } from '../lib/utils'
+import { initials, whatsappLink } from '../lib/utils'
+import { useApp } from '../context/AppContext'
 
 /** Image avec repli élégant si le lien est cassé ou absent. */
 export function Img({ src, alt, className }: { src: string | null | undefined; alt: string; className?: string }) {
@@ -118,5 +119,59 @@ export function ImagePicker({
         />
       </div>
     </div>
+  )
+}
+
+/** Logo du salon : celui envoyé par l'admin, sinon un monogramme noir & or. */
+export function Brand({ compact = false }: { compact?: boolean }) {
+  const { settings } = useApp()
+  return (
+    <span className="brand">
+      {settings.logo_url ? (
+        <img src={settings.logo_url} alt={settings.name} className="brand-logo" />
+      ) : (
+        <span className="brand-mark" aria-hidden="true">MC</span>
+      )}
+      {!compact && (
+        <span className="brand-text">
+          <span className="brand-name">{settings.name}</span>
+          <span className="brand-sub">{settings.tagline}</span>
+        </span>
+      )}
+    </span>
+  )
+}
+
+/**
+ * Partage d'un contenu : menu natif du téléphone (WhatsApp, Facebook, Instagram…)
+ * quand il existe, sinon liens WhatsApp et Facebook.
+ */
+export function ShareButton({ title, text, path, label = 'Partager' }: { title: string; text: string; path: string; label?: string }) {
+  const [open, setOpen] = useState(false)
+  const url = `${window.location.origin}${path}`
+  async function share() {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url })
+      } catch {
+        /* partage annulé */
+      }
+      return
+    }
+    setOpen((o) => !o)
+  }
+  return (
+    <span className="share">
+      <button type="button" className="action" onClick={share}>
+        <Icon name="share" size={18} /> {label}
+      </button>
+      {open && (
+        <span className="share-menu" onMouseLeave={() => setOpen(false)}>
+          <a href={whatsappLink('', `${text}\n${url}`)} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={16} /> WhatsApp</a>
+          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`} target="_blank" rel="noreferrer"><Icon name="facebook" size={16} /> Facebook</a>
+          <button type="button" onClick={() => { navigator.clipboard?.writeText(url); setOpen(false) }}>Copier le lien</button>
+        </span>
+      )}
+    </span>
   )
 }

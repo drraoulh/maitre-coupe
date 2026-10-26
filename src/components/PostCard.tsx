@@ -5,10 +5,10 @@ import { api } from '../lib/client'
 import { errorMessage, timeAgo } from '../lib/utils'
 import type { Post } from '../types'
 import { Icon } from './Icon'
-import { Avatar, Img } from './ui'
+import { Avatar, Img, ShareButton } from './ui'
 
 export function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
-  const { user, toast } = useApp()
+  const { user, toast, settings } = useApp()
   const [showComments, setShowComments] = useState(post.comments.length > 0 && post.comments.length <= 2)
   const [comment, setComment] = useState('')
   const [liked, setLiked] = useState(post.liked_by_me)
@@ -63,7 +63,7 @@ export function PostCard({ post, onChange }: { post: Post; onChange: () => void 
   }
 
   return (
-    <article className="card post">
+    <article className="card post" id={post.id}>
       <header className="post-head">
         <Avatar name={post.author.full_name} url={post.author.avatar_url} />
         <div className="post-meta">
@@ -88,6 +88,7 @@ export function PostCard({ post, onChange }: { post: Post; onChange: () => void 
         <button className="action" onClick={() => setShowComments((s) => !s)}>
           <Icon name="comment" size={20} /> {post.comments.length}
         </button>
+        <ShareButton title={settings.name} text={post.content ? `${post.content.slice(0, 200)} — ${settings.name}` : settings.name} path={`/communaute#${post.id}`} />
       </div>
       {showComments && (
         <div className="comments">

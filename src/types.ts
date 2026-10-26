@@ -30,7 +30,11 @@ export interface Settings {
   currency: string
   slot_step: number // minutes entre deux créneaux
   capacity: number // nombre de clients pris en charge en même temps
-  hero_image: string
+  hero_image: string // photo de couverture (vide = fond noir & or)
+  logo_url: string // logo envoyé par l'admin (vide = logo par défaut)
+  google_url: string // fiche Google du salon
+  google_rating: number // note affichée (ex. 4.6)
+  google_reviews: number // nombre d'avis
   hours: DayHours[] // index 0 = dimanche … 6 = samedi
 }
 

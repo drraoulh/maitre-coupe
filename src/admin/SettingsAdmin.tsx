@@ -46,7 +46,10 @@ export default function SettingsAdmin() {
           <span className="label">Présentation</span>
           <textarea rows={4} value={f.about} onChange={(e) => set('about', e.target.value)} />
         </label>
-        <ImagePicker label="Image de couverture (accueil)" value={f.hero_image} onChange={(u) => set('hero_image', u ?? '')} upload={(file) => api.uploadImage(file)} />
+        <div className="form-grid">
+          <ImagePicker label="Logo" value={f.logo_url || null} onChange={(u) => set('logo_url', u ?? '')} upload={(file) => api.uploadImage(file)} />
+          <ImagePicker label="Photo de couverture (accueil)" value={f.hero_image || null} onChange={(u) => set('hero_image', u ?? '')} upload={(file) => api.uploadImage(file)} />
+        </div>
       </section>
 
       <section className="card card-pad">
@@ -55,11 +58,20 @@ export default function SettingsAdmin() {
           {text('address', 'Adresse')}
           {text('city', 'Ville')}
           {text('phone', 'Téléphone affiché')}
-          {text('whatsapp', 'Numéro WhatsApp (format international, ex. 242061234567)', { inputMode: 'numeric' })}
+          {text('whatsapp', 'Numéro WhatsApp (format international sans +, ex. 237657755868)', { inputMode: 'numeric' })}
           {text('email', 'E-mail', { type: 'email' })}
           {text('instagram', 'Lien Instagram', { type: 'url', placeholder: 'https://instagram.com/…' })}
           {text('facebook', 'Lien Facebook', { type: 'url', placeholder: 'https://facebook.com/…' })}
           {text('tiktok', 'Lien TikTok', { type: 'url', placeholder: 'https://tiktok.com/@…' })}
+          {text('google_url', 'Lien de la fiche Google', { type: 'url' })}
+          <label className="field">
+            <span className="label">Note Google (sur 5)</span>
+            <input type="number" min={0} max={5} step={0.1} value={f.google_rating} onChange={(e) => set('google_rating', Number(e.target.value))} />
+          </label>
+          <label className="field">
+            <span className="label">Nombre d’avis Google</span>
+            <input type="number" min={0} value={f.google_reviews} onChange={(e) => set('google_reviews', Number(e.target.value))} />
+          </label>
         </div>
       </section>
 
@@ -74,7 +86,7 @@ export default function SettingsAdmin() {
             </select>
           </label>
           <label className="field">
-            <span className="label">Clients servis en même temps (nombre de postes)</span>
+            <span className="label">Clients servis en même temps (postes + cabines)</span>
             <input type="number" min={1} max={20} value={f.capacity} onChange={(e) => set('capacity', Math.max(1, Number(e.target.value)))} />
           </label>
         </div>

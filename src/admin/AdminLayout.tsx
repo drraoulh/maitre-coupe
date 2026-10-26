@@ -3,19 +3,19 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { Icon } from '../components/Icon'
-import { Avatar } from '../components/ui'
+import { Avatar, Brand } from '../components/ui'
 
 const LINKS = [
   { to: '/admin', label: 'Tableau de bord', icon: 'chart', end: true },
   { to: '/admin/rendez-vous', label: 'Rendez-vous', icon: 'calendar' },
-  { to: '/admin/prestations', label: 'Prestations & prix', icon: 'tag' },
-  { to: '/admin/coiffures', label: 'Coiffures', icon: 'image' },
+  { to: '/admin/prestations', label: 'Soins & prix', icon: 'tag' },
+  { to: '/admin/coiffures', label: 'Modèles (galerie)', icon: 'image' },
   { to: '/admin/publications', label: 'Communauté', icon: 'users' },
   { to: '/admin/parametres', label: 'Paramètres', icon: 'settings' },
 ]
 
 export default function AdminLayout() {
-  const { user, settings, refreshUser } = useApp()
+  const { user, refreshUser } = useApp()
   const [open, setOpen] = useState(false)
   const loc = useLocation()
   useEffect(() => setOpen(false), [loc.pathname])
@@ -23,10 +23,7 @@ export default function AdminLayout() {
   return (
     <div className="admin">
       <aside className={`admin-side ${open ? 'open' : ''}`}>
-        <Link to="/" className="brand">
-          <span className="brand-mark"><Icon name="scissors" size={18} /></span>
-          <span>{settings.name}</span>
-        </Link>
+        <Link to="/"><Brand /></Link>
         <span className="admin-label">Administration</span>
         <nav>
           {LINKS.map((l) => (

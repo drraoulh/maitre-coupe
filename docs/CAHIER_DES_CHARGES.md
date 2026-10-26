@@ -156,7 +156,7 @@ publications / likes / commentaires
 
 | Étape | Contenu | Résultat testable |
 |---|---|---|
-| **1. Fondations** | Identité noir & or + logo, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
+| **1. Fondations** ✅ | Identité noir & or + logo, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
 | **2. Vitrine** | Accueil, Nos soins & tarifs (6 univers + formules), Galerie, Le salon | Montrer le site aux clients |
 | **3. Réservation** | Sans compte, créneaux libres, WhatsApp au salon | Prendre un vrai RDV |
 | **4. Admin** | Tableau de bord, RDV, soins & prix, galerie, paramètres | Gérer le salon depuis le téléphone |
@@ -170,10 +170,10 @@ publications / likes / commentaires
 
 ## 9. Décisions
 
-**Validé ✅** : FCFA / Cameroun · réservation sans compte · noir & or + logo existant · positionnement coiffure + beauté + bien-être.
+**Validé ✅** : horaires version A (lun–sam 7h–21h, dim 12h–21h30) · soins, modèles et prix publiés par l’admin, qui peut aussi les publier dans la communauté · FCFA / Cameroun · réservation sans compte · noir & or + logo existant · positionnement coiffure + beauté + bien-être.
 
 **À fournir / confirmer par le salon ❓**
-1. **Horaires réels** (version A ou B, ou autres).
+1. ~~Horaires~~ → version A retenue.
 2. **Liste des soins avec prix et durées** pour les 6 univers, et les formules éventuelles.
 3. Le lien WhatsApp `wa.me/message/LSCNTSUAUE4CP1` fonctionne-t-il ? Quelle page Facebook est l'officielle ?
 4. **Équipe** : combien de postes / cabines peuvent travailler en même temps ?

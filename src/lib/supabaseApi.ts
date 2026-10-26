@@ -4,8 +4,8 @@ import type { Appointment, Author, Hairstyle, Post, Profile, Service, Settings }
 import { DEFAULT_SETTINGS } from './seed'
 import { compressImage, uid } from './utils'
 
-function check<T>(res: { data: T; error: { message: string } | null }): T {
-  if (res.error) throw new Error(translate(res.error.message))
+function check<R extends { data: unknown; error: unknown }>(res: R): R['data'] {
+  if (res.error) throw new Error(translate((res.error as { message?: string }).message ?? 'Erreur inconnue'))
   return res.data
 }
 
@@ -53,6 +53,7 @@ export function createSupabaseApi(url: string, key: string): Api {
     },
     async signIn(email, password) {
       const data = check(await sb.auth.signInWithPassword({ email: email.trim(), password }))
+      if (!data.user) throw new Error('Connexion impossible.')
       const p = await loadProfile(data.user.id)
       if (!p) throw new Error('Profil introuvable. Le script supabase/schema.sql a-t-il été exécuté ?')
       return p

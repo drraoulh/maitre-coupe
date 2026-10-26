@@ -1,30 +1,31 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
-import { formatDuration, formatPrice } from '../lib/utils'
+import { formatDuration, formatPrice, whatsappLink } from '../lib/utils'
+import { sortCategories } from '../lib/univers'
 import { Icon } from '../components/Icon'
 import { Empty, Img, Spinner } from '../components/ui'
 
 export default function Services() {
   const { settings } = useApp()
   const { data, loading } = useLoad(() => api.listServices())
-  const [cat, setCat] = useState('Tout')
-  const active = (data ?? []).filter((s) => s.active)
-  const cats = useMemo(() => ['Tout', ...Array.from(new Set(active.map((s) => s.category)))], [active])
+  const [params, setParams] = useSearchParams()
+  const active = useMemo(() => (data ?? []).filter((s) => s.active), [data])
+  const cats = useMemo(() => ['Tout', ...sortCategories(active.map((s) => s.category))], [active])
+  const wanted = params.get('univers') ?? 'Tout'
+  const cat = cats.includes(wanted) ? wanted : 'Tout'
+  const setCat = (c: string) => setParams(c === 'Tout' ? {} : { univers: c }, { replace: true })
   const shown = cat === 'Tout' ? active : active.filter((s) => s.category === cat)
-  const grouped = shown.reduce<Record<string, typeof shown>>((acc, s) => {
-    ;(acc[s.category] ??= []).push(s)
-    return acc
-  }, {})
+  const grouped = sortCategories(shown.map((s) => s.category)).map((c) => [c, shown.filter((s) => s.category === c)] as const)
 
   return (
     <div className="container page">
       <div className="page-head">
         <span className="eyebrow">Carte des prestations</span>
-        <h1>Prestations & tarifs</h1>
-        <p className="muted">Prix indicatifs en {settings.currency}. Réservez en ligne en quelques secondes.</p>
+        <h1>Soins & tarifs</h1>
+        <p className="muted">Coiffure, visage, hammam, gommage, mains & pieds, massages. Prix en {settings.currency}.</p>
       </div>
       <div className="filters">
         {cats.map((c) => (
@@ -36,9 +37,16 @@ export default function Services() {
       {loading ? (
         <Spinner />
       ) : shown.length === 0 ? (
-        <Empty title="Aucune prestation pour le moment" />
+        <Empty title="La carte des soins arrive bientôt">
+          <p className="muted small">En attendant, demandez nos tarifs directement au salon.</p>
+          {settings.whatsapp && (
+            <a className="btn btn-gold btn-sm" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, pouvez-vous m'envoyer vos tarifs ?`)} target="_blank" rel="noreferrer">
+              Demander les tarifs sur WhatsApp
+            </a>
+          )}
+        </Empty>
       ) : (
-        Object.entries(grouped).map(([category, list]) => (
+        grouped.map(([category, list]) => (
           <section key={category} className="price-section">
             <h2 className="price-cat">{category}</h2>
             <div className="price-list">

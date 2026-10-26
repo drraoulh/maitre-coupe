@@ -3,11 +3,11 @@ import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
 import { errorMessage, formatDuration, formatPrice } from '../lib/utils'
+import { CATEGORIES } from '../lib/univers'
 import { Icon } from '../components/Icon'
 import { Empty, ImagePicker, Img, Modal, Spinner } from '../components/ui'
 import type { Service } from '../types'
 
-const CATEGORIES = ['Homme', 'Femme', 'Enfant', 'Beauté', 'Soins']
 
 export default function ServicesAdmin() {
   const { settings, toast } = useApp()
@@ -27,7 +27,7 @@ export default function ServicesAdmin() {
     if (!confirm(`Supprimer « ${s.name} » ?`)) return
     try {
       await api.deleteService(s.id)
-      toast('Prestation supprimée')
+      toast('Soin supprimé')
       reload()
     } catch (e) {
       toast(errorMessage(e), 'error')
@@ -37,15 +37,17 @@ export default function ServicesAdmin() {
   return (
     <div>
       <div className="toolbar">
-        <p className="muted">Les prix et durées affichés sur le site et utilisés pour la réservation.</p>
-        <button className="btn btn-gold btn-sm" onClick={() => setEditing({ category: 'Homme', duration: 30, price: 0, active: true })}>
-          <Icon name="plus" size={16} /> Nouvelle prestation
+        <p className="muted">Votre carte : chaque soin avec son prix et sa durée (utilisée pour calculer les créneaux de réservation).</p>
+        <button className="btn btn-gold btn-sm" onClick={() => setEditing({ category: CATEGORIES[0], duration: 30, price: 0, active: true })}>
+          <Icon name="plus" size={16} /> Nouveau soin
         </button>
       </div>
       {loading ? (
         <Spinner />
       ) : !data?.length ? (
-        <Empty icon="tag" title="Aucune prestation" />
+        <Empty icon="tag" title="Aucun soin pour l’instant">
+          <p className="muted small">Ajoutez vos soins et leurs prix : ils apparaîtront sur la page « Soins & tarifs » et dans la réservation.</p>
+        </Empty>
       ) : (
         <div className="admin-list">
           {data.map((s) => (
@@ -72,7 +74,7 @@ export default function ServicesAdmin() {
           initial={editing}
           currency={settings.currency}
           onClose={() => setEditing(null)}
-          onSaved={() => { setEditing(null); reload(); toast('Prestation enregistrée') }}
+          onSaved={() => { setEditing(null); reload(); toast('Soin enregistré') }}
         />
       )}
     </div>
@@ -99,14 +101,16 @@ function ServiceForm({ initial, currency, onClose, onSaved }: { initial: Partial
   }
 
   return (
-    <Modal title={initial.id ? 'Modifier la prestation' : 'Nouvelle prestation'} onClose={onClose}>
+    <Modal title={initial.id ? 'Modifier le soin' : 'Nouveau soin'} onClose={onClose}>
       <form onSubmit={submit}>
         <label className="field"><span className="label">Nom</span><input required value={f.name ?? ''} onChange={(e) => set('name', e.target.value)} /></label>
         <div className="form-grid">
           <label className="field">
-            <span className="label">Catégorie</span>
-            <input list="cats" required value={f.category ?? ''} onChange={(e) => set('category', e.target.value)} />
-            <datalist id="cats">{CATEGORIES.map((c) => <option key={c} value={c} />)}</datalist>
+            <span className="label">Univers</span>
+            <select required value={f.category ?? CATEGORIES[0]} onChange={(e) => set('category', e.target.value)}>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {f.category && !CATEGORIES.includes(f.category) && <option value={f.category}>{f.category}</option>}
+            </select>
           </label>
           <label className="field"><span className="label">Prix ({currency})</span><input type="number" min={0} step={100} required value={f.price ?? 0} onChange={(e) => set('price', Number(e.target.value))} /></label>
           <label className="field"><span className="label">Durée (minutes)</span><input type="number" min={5} step={5} required value={f.duration ?? 30} onChange={(e) => set('duration', Number(e.target.value))} /></label>

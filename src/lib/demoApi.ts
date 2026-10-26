@@ -5,7 +5,7 @@
  */
 import type { Api } from './api'
 import type { Appointment, Comment, Hairstyle, Post, Profile, Service, Settings } from '../types'
-import { DEFAULT_SETTINGS, SEED_HAIRSTYLES, SEED_SERVICES } from './seed'
+import { DEFAULT_SETTINGS } from './seed'
 import { blobToDataURL, compressImage, uid } from './utils'
 
 interface StoredUser extends Profile {
@@ -32,7 +32,7 @@ interface StoredComment {
 
 export const DEMO_ADMIN = { email: 'admin@maitre-coupe.com', password: 'admin123' }
 
-const KEY = 'mc_demo_v1_'
+const KEY = 'mc_demo_v2_'
 
 function read<T>(name: string, fallback: T): T {
   try {
@@ -60,18 +60,16 @@ function seedIfNeeded() {
   ]
   write('users', users)
   write('settings', DEFAULT_SETTINGS)
-  write('services', SEED_SERVICES.map((s) => ({ ...s, id: uid() })))
-  write(
-    'hairstyles',
-    SEED_HAIRSTYLES.map((h, i) => ({ ...h, id: uid(), created_at: new Date(now - i * 3600_000).toISOString() })),
-  )
+  // Catalogue et galerie vides : c'est l'admin qui publie les soins, modèles et prix.
+  write('services', [] as Service[])
+  write('hairstyles', [] as Hairstyle[])
   write('appointments', [] as Appointment[])
   write('posts', [
     {
       id: uid(),
       author_id: adminId,
-      content: "Bienvenue dans la communauté Maître Coupe ! ✂️ Partagez vos coiffures, laissez vos avis et découvrez nos dernières réalisations.",
-      image_url: SEED_HAIRSTYLES[0].image_url,
+      content: "Bienvenue dans la communauté Maître Coupe ! ✨ Coiffure, soins du visage, hammam, gommage, manucure, pédicure et massages à Nkolmesseng, face à Guiko Center. Partagez vos looks et vos avis !",
+      image_url: null,
       created_at: new Date(now - 86400_000).toISOString(),
     },
   ] as StoredPost[])

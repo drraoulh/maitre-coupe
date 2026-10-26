@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
 import { errorMessage, formatPrice } from '../lib/utils'
+import { CATEGORIES } from '../lib/univers'
 import { Icon } from '../components/Icon'
 import { Empty, ImagePicker, Img, Modal, Spinner } from '../components/ui'
 import type { Hairstyle } from '../types'
@@ -16,7 +17,7 @@ export default function GalleryAdmin() {
     if (!confirm(`Supprimer « ${h.title} » ?`)) return
     try {
       await api.deleteHairstyle(h.id)
-      toast('Coiffure supprimée')
+      toast('Modèle supprimé')
       reload()
     } catch (e) {
       toast(errorMessage(e), 'error')
@@ -26,13 +27,13 @@ export default function GalleryAdmin() {
   return (
     <div>
       <div className="toolbar">
-        <p className="muted">Publiez vos réalisations : elles apparaissent dans la galerie « Coiffures ».</p>
-        <button className="btn btn-gold btn-sm" onClick={() => setEditing({ category: 'Homme' })}><Icon name="plus" size={16} /> Publier une coiffure</button>
+        <p className="muted">Publiez vos modèles avec leur prix : ils apparaissent dans la « Galerie », et peuvent aussi être partagés dans la communauté.</p>
+        <button className="btn btn-gold btn-sm" onClick={() => setEditing({ category: CATEGORIES[0] })}><Icon name="plus" size={16} /> Publier un modèle</button>
       </div>
       {loading ? (
         <Spinner />
       ) : !data?.length ? (
-        <Empty icon="image" title="Aucune coiffure publiée" />
+        <Empty icon="image" title="Aucun modèle publié" />
       ) : (
         <div className="grid grid-4">
           {data.map((h) => (
@@ -51,16 +52,17 @@ export default function GalleryAdmin() {
         </div>
       )}
       {editing && (
-        <StyleForm initial={editing} currency={settings.currency} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); reload(); toast('Coiffure enregistrée') }} />
+        <StyleForm initial={editing} currency={settings.currency} onClose={() => setEditing(null)} onSaved={(shared) => { setEditing(null); reload(); toast(shared ? 'Modèle publié dans la galerie et la communauté' : 'Modèle enregistré') }} />
       )}
     </div>
   )
 }
 
-function StyleForm({ initial, currency, onClose, onSaved }: { initial: Partial<Hairstyle>; currency: string; onClose: () => void; onSaved: () => void }) {
+function StyleForm({ initial, currency, onClose, onSaved }: { initial: Partial<Hairstyle>; currency: string; onClose: () => void; onSaved: (shared: boolean) => void }) {
   const { toast } = useApp()
   const [f, setF] = useState(initial)
   const [busy, setBusy] = useState(false)
+  const [alsoPost, setAlsoPost] = useState(!initial.id)
   const set = <K extends keyof Hairstyle>(k: K, v: Hairstyle[K]) => setF((x) => ({ ...x, [k]: v }))
 
   async function submit(e: React.FormEvent) {
@@ -68,8 +70,14 @@ function StyleForm({ initial, currency, onClose, onSaved }: { initial: Partial<H
     if (!f.image_url) return toast('Ajoutez une photo.', 'error')
     setBusy(true)
     try {
-      await api.saveHairstyle({ ...f, title: (f.title ?? '').trim(), image_url: f.image_url })
-      onSaved()
+      const title = (f.title ?? '').trim()
+      await api.saveHairstyle({ ...f, title, image_url: f.image_url })
+      if (alsoPost) {
+        const price = f.price_from != null ? ` — dès ${formatPrice(f.price_from, currency)}` : ''
+        const desc = f.description?.trim() ? `\n${f.description.trim()}` : ''
+        await api.createPost({ content: `✨ Nouveau modèle : ${title}${price}${desc}\nRéservez sur le site ou sur WhatsApp !`, image_url: f.image_url })
+      }
+      onSaved(alsoPost)
     } catch (err) {
       toast(errorMessage(err), 'error')
     } finally {
@@ -78,15 +86,17 @@ function StyleForm({ initial, currency, onClose, onSaved }: { initial: Partial<H
   }
 
   return (
-    <Modal title={initial.id ? 'Modifier la coiffure' : 'Publier une coiffure'} onClose={onClose}>
+    <Modal title={initial.id ? 'Modifier le modèle' : 'Publier un modèle'} onClose={onClose}>
       <form onSubmit={submit}>
         <ImagePicker value={f.image_url ?? null} onChange={(url) => set('image_url', url ?? '')} upload={(file) => api.uploadImage(file)} />
-        <label className="field"><span className="label">Nom de la coiffure</span><input required value={f.title ?? ''} onChange={(e) => set('title', e.target.value)} /></label>
+        <label className="field"><span className="label">Nom du modèle</span><input required value={f.title ?? ''} onChange={(e) => set('title', e.target.value)} /></label>
         <div className="form-grid">
           <label className="field">
-            <span className="label">Catégorie</span>
-            <input list="style-cats" value={f.category ?? ''} onChange={(e) => set('category', e.target.value)} />
-            <datalist id="style-cats">{['Homme', 'Femme', 'Enfant', 'Beauté'].map((c) => <option key={c} value={c} />)}</datalist>
+            <span className="label">Univers</span>
+            <select value={f.category ?? CATEGORIES[0]} onChange={(e) => set('category', e.target.value)}>
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {f.category && !CATEGORIES.includes(f.category) && <option value={f.category}>{f.category}</option>}
+            </select>
           </label>
           <label className="field">
             <span className="label">Prix à partir de ({currency})</span>
@@ -94,6 +104,7 @@ function StyleForm({ initial, currency, onClose, onSaved }: { initial: Partial<H
           </label>
         </div>
         <label className="field"><span className="label">Description</span><textarea rows={3} value={f.description ?? ''} onChange={(e) => set('description', e.target.value)} /></label>
+        <label className="check"><input type="checkbox" checked={alsoPost} onChange={(e) => setAlsoPost(e.target.checked)} /> Publier aussi dans la communauté</label>
         <button className="btn btn-gold btn-block" disabled={busy}>{busy ? 'Enregistrement…' : 'Enregistrer'}</button>
       </form>
     </Modal>
