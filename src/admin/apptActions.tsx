@@ -11,6 +11,7 @@ export function ApptActions({ a, onChange }: { a: Appointment; onChange: () => v
   async function set(status: AppointmentStatus) {
     try {
       await api.updateAppointmentStatus(a.id, status)
+      window.dispatchEvent(new Event('mc:rdv-change'))
       toast(status === 'confirmed' ? 'Rendez-vous confirmé' : status === 'done' ? 'Marqué comme terminé' : 'Rendez-vous annulé')
       onChange()
     } catch (e) {

@@ -28,7 +28,7 @@ export default function Appointments() {
     if (status !== 'all') list = list.filter((a) => a.status === status)
     if (q.trim()) {
       const s = q.trim().toLowerCase()
-      list = list.filter((a) => `${a.client_name} ${a.client_phone} ${a.service_name}`.toLowerCase().includes(s))
+      list = list.filter((a) => `${a.client_name} ${a.client_phone} ${a.service_name} ${bookingRef(a.id)}`.toLowerCase().includes(s))
     }
     const asc = range !== 'past' && range !== 'all'
     return [...list].sort((a, b) => {
@@ -54,7 +54,7 @@ export default function Appointments() {
           <option value="all">Tous les statuts</option>
           {Object.entries(STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
         </select>
-        <input className="search" placeholder="Rechercher un client, un téléphone…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input className="search" placeholder="Client, téléphone ou code MC-…" value={q} onChange={(e) => setQ(e.target.value)} />
         <button className="btn btn-gold btn-sm" onClick={() => setAdding(true)}><Icon name="plus" size={16} /> Ajouter</button>
       </div>
 

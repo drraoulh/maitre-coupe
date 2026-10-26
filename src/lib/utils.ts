@@ -208,3 +208,24 @@ export function overlaps(aTime: string, aDur: number, bTime: string, bDur: numbe
   const b = toMinutes(bTime)
   return a < b + bDur && b < a + aDur
 }
+
+/** Message WhatsApp envoyé au salon à la réservation : tous les détails + lien de validation pour l'admin. */
+export function salonBookingMessage(
+  a: { id: string; service_name: string; date: string; time: string; duration: number; price: number; client_name: string; client_phone: string; note: string },
+  opts: { salonName: string; currency: string; origin: string },
+): string {
+  const code = bookingRef(a.id)
+  const lines = [
+    `Bonjour ${opts.salonName} 👋, nouvelle réservation depuis le site :`,
+    '',
+    `🔑 Code : ${code}`,
+    `💇 Soin : ${a.service_name}`,
+    `📅 Date : ${formatDate(a.date)} à ${a.time} (${formatDuration(a.duration)})`,
+    `💰 Prix : ${a.price > 0 ? formatPrice(a.price, opts.currency) : 'sur devis'}`,
+    `👤 Nom : ${a.client_name}`,
+    `📞 Tél : ${a.client_phone}`,
+  ]
+  if (a.note) lines.push(`📝 ${a.note}`)
+  lines.push('', `✅ Valider le rendez-vous : ${opts.origin}/admin/valider/${a.id}`)
+  return lines.join('\n')
+}

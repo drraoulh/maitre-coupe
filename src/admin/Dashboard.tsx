@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
-import { STATUS_LABELS, formatDate, formatDuration, formatPrice, parseISODate, toISODate } from '../lib/utils'
+import { STATUS_LABELS, bookingRef, formatDate, formatDuration, formatPrice, parseISODate, toISODate } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Empty, Spinner } from '../components/ui'
 import { ApptActions } from './apptActions'
@@ -11,6 +12,9 @@ export default function Dashboard() {
   const { settings } = useApp()
   const { data, loading, reload } = useLoad(() => api.listAppointments())
   const posts = useLoad(() => api.listPosts())
+  const navigate = useNavigate()
+  const [code, setCode] = useState('')
+  const [codeErr, setCodeErr] = useState('')
 
   if (loading) return <Spinner />
   const all = data ?? []
@@ -42,8 +46,22 @@ export default function Dashboard() {
   })
   const max7 = Math.max(1, ...next7.map((d) => d.n))
 
+  function findCode(e: React.FormEvent) {
+    e.preventDefault()
+    const wanted = code.trim().toUpperCase().replace(/^MC-?/, '')
+    const hit = all.find((a) => bookingRef(a.id).replace('MC-', '') === wanted)
+    if (hit) navigate(`/admin/valider/${hit.id}`)
+    else setCodeErr('Aucun rendez-vous avec ce code.')
+  }
+
   return (
     <div className="dash">
+      <form className="card code-box" onSubmit={findCode}>
+        <label htmlFor="code"><Icon name="check" size={18} /> Valider par code</label>
+        <input id="code" value={code} onChange={(e) => { setCode(e.target.value); setCodeErr('') }} placeholder="MC-XXXXXX" autoCapitalize="characters" />
+        <button className="btn btn-gold btn-sm" disabled={!code.trim()}>Ouvrir</button>
+        {codeErr && <span className="error-text">{codeErr}</span>}
+      </form>
       <div className="stats">
         <div className="stat">
           <span className="stat-label"><Icon name="calendar" size={16} /> Aujourd’hui</span>

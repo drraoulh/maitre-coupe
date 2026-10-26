@@ -13,8 +13,9 @@ export function RequireUser({ children }: { children: ReactNode }) {
 
 export function RequireAdmin({ children }: { children: ReactNode }) {
   const { user, authReady } = useApp()
+  const loc = useLocation()
   if (!authReady) return <div className="page-center"><Spinner /></div>
-  if (!user) return <Navigate to="/connexion?suite=/admin" replace />
+  if (!user) return <Navigate to={`/connexion?suite=${encodeURIComponent(loc.pathname)}`} replace />
   if (user.role !== 'admin')
     return (
       <div className="page-center">

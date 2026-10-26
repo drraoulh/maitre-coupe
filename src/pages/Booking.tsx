@@ -6,7 +6,7 @@ import { useLoad } from '../lib/useLoad'
 import { EXTRAS, UNIVERS, sortCategories } from '../lib/univers'
 import {
   availableSlots, bookingRef, calendarFile, dayPart, errorMessage, formatDate, formatDuration, formatPrice, hoursFor,
-  normalizeCameroonPhone, toISODate, whatsappLink,
+  normalizeCameroonPhone, salonBookingMessage, toISODate, whatsappLink,
 } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Spinner } from '../components/ui'
@@ -108,6 +108,9 @@ export default function Booking() {
     e.preventDefault()
     setPhoneTouched(true)
     if (!service || !ready || !phoneOk) return
+    // La fenêtre WhatsApp doit être ouverte pendant le clic, sinon le téléphone la bloque :
+    // on l'ouvre tout de suite, puis on y charge le message une fois la réservation enregistrée.
+    const waWindow = settings.whatsapp ? window.open('', '_blank') : null
     setSending(true)
     try {
       const details = [needsAddress ? `À domicile : ${address.trim()}` : '', note.trim()].filter(Boolean).join(' — ')
@@ -130,7 +133,13 @@ export default function Booking() {
       }
       setDone(appt)
       window.scrollTo(0, 0)
+      if (settings.whatsapp) {
+        const link = whatsappLink(settings.whatsapp, salonBookingMessage(appt, { salonName: settings.name, currency: settings.currency, origin: window.location.origin }))
+        if (waWindow && !waWindow.closed) waWindow.location.href = link
+        else window.location.href = link // fenêtre bloquée : on ouvre WhatsApp dans l'onglet courant
+      }
     } catch (err) {
+      waWindow?.close()
       toast(errorMessage(err), 'error')
       setTime('')
       loadBusy(date) // le créneau a peut-être été pris entre-temps
@@ -312,7 +321,7 @@ export default function Booking() {
 function Confirmation({ appt, onNew }: { appt: Appointment; onNew: () => void }) {
   const { settings, user } = useApp()
   const ref = bookingRef(appt.id)
-  const msg = `Bonjour ${settings.name}, je viens de réserver (réf. ${ref}) :\n• ${appt.service_name}\n• ${formatDate(appt.date)} à ${appt.time}\n• Nom : ${appt.client_name}\n• Tél : ${appt.client_phone}${appt.note ? `\n• ${appt.note}` : ''}`
+  const msg = salonBookingMessage(appt, { salonName: settings.name, currency: settings.currency, origin: window.location.origin })
   const ics = calendarFile({
     title: `${appt.service_name} — ${settings.name}`,
     date: appt.date,
@@ -331,8 +340,10 @@ function Confirmation({ appt, onNew }: { appt: Appointment; onNew: () => void })
       <div className="card success-card">
         <div className="success-icon"><Icon name="check" size={32} /></div>
         <h1>Demande envoyée !</h1>
-        <p className="muted">Le salon va confirmer votre rendez-vous très vite, par téléphone ou WhatsApp.</p>
-        <span className="ref">Réf. {ref}</span>
+        <p className="muted">
+          WhatsApp s’ouvre avec votre demande : <strong>envoyez le message</strong> au salon, qui validera votre rendez-vous avec votre code.
+        </p>
+        <span className="ref">Code {ref}</span>
         <div className="summary">
           <div><span>Soin</span><strong>{appt.service_name}</strong></div>
           <div><span>Date</span><strong>{formatDate(appt.date)}</strong></div>
@@ -342,7 +353,7 @@ function Confirmation({ appt, onNew }: { appt: Appointment; onNew: () => void })
         </div>
         {settings.whatsapp && (
           <a className="btn btn-whatsapp btn-block" href={whatsappLink(settings.whatsapp, msg)} target="_blank" rel="noreferrer">
-            <Icon name="whatsapp" /> Prévenir le salon sur WhatsApp
+            <Icon name="whatsapp" /> Rouvrir le message WhatsApp
           </a>
         )}
         <a className="btn btn-ghost btn-block" href={ics} download={`rendez-vous-${ref}.ics`}>

@@ -17,6 +17,7 @@ import ServicesAdmin from './admin/ServicesAdmin'
 import GalleryAdmin from './admin/GalleryAdmin'
 import PostsAdmin from './admin/PostsAdmin'
 import SettingsAdmin from './admin/SettingsAdmin'
+import Validate from './admin/Validate'
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="coiffures" element={<GalleryAdmin />} />
         <Route path="publications" element={<PostsAdmin />} />
         <Route path="parametres" element={<SettingsAdmin />} />
+        <Route path="valider/:id" element={<Validate />} />
       </Route>
     </Routes>
   )

@@ -32,9 +32,11 @@ export default function AdminLayout() {
         .catch(() => {})
     check()
     const t = setInterval(check, 60_000)
+    window.addEventListener('mc:rdv-change', check)
     return () => {
       alive = false
       clearInterval(t)
+      window.removeEventListener('mc:rdv-change', check)
     }
   }, [loc.pathname])
 
@@ -76,7 +78,7 @@ export default function AdminLayout() {
             <Icon name="menu" />
             {pending > 0 && <span className="count-dot" />}
           </button>
-          <span className="admin-top-title">{LINKS.find((l) => (l.end ? loc.pathname === l.to : loc.pathname.startsWith(l.to)))?.label}</span>
+          <span className="admin-top-title">{loc.pathname.startsWith('/admin/valider') ? 'Valider un rendez-vous' : LINKS.find((l) => (l.end ? loc.pathname === l.to : loc.pathname.startsWith(l.to)))?.label}</span>
           {pending > 0 && (
             <Link to="/admin/rendez-vous" className="pill pill-pending">{pending} à confirmer</Link>
           )}
