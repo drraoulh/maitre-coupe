@@ -17,8 +17,10 @@ export default function SettingsAdmin() {
     e.preventDefault()
     setBusy(true)
     try {
-      await api.saveSettings(f)
-      setSettings(f)
+      const clean = { ...f, amenities: f.amenities.map((a) => a.trim()).filter(Boolean) }
+      await api.saveSettings(clean)
+      setSettings(clean)
+      setF(clean)
       toast('Paramètres enregistrés')
     } catch (err) {
       toast(errorMessage(err), 'error')
@@ -52,7 +54,18 @@ export default function SettingsAdmin() {
           <ImagePicker label="Photo du salon" value={f.salon_photo || null} onChange={(u) => set('salon_photo', u ?? '')} upload={(file) => api.uploadImage(file)} />
           <ImagePicker label="Photo du gérant" value={f.owner_photo || null} onChange={(u) => set('owner_photo', u ?? '')} upload={(file) => api.uploadImage(file)} />
         </div>
-        {text('owner_name', 'Nom du gérant (affiché sous sa photo)')}
+        <div className="form-grid">
+          {text('owner_name', 'Nom du gérant (affiché sous sa photo)')}
+          {text('owner_bio', 'Quelques mots du gérant (facultatif)')}
+        </div>
+        <label className="field">
+          <span className="label">Atouts du salon (un par ligne, page « Le salon »)</span>
+          <textarea
+            rows={5}
+            value={f.amenities.join('\n')}
+            onChange={(e) => set('amenities', e.target.value.split('\n').map((l) => l.trimStart()).filter((l, i, a) => l || i === a.length - 1))}
+          />
+        </label>
       </section>
 
       <section className="card card-pad">

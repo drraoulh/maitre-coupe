@@ -6,6 +6,7 @@ import { useLoad } from '../lib/useLoad'
 import { formatPrice } from '../lib/utils'
 import { sortCategories } from '../lib/univers'
 import { Empty, Img, Modal, ShareButton, Spinner } from '../components/ui'
+import { PageHero } from '../components/PageHero'
 import type { Hairstyle } from '../types'
 
 export default function Gallery() {
@@ -18,12 +19,9 @@ export default function Gallery() {
   const shown = cat === 'Tout' ? all : all.filter((h) => h.category === cat)
 
   return (
-    <div className="container page">
-      <div className="page-head">
-        <span className="eyebrow">Inspiration</span>
-        <h1>Galerie</h1>
-        <p className="muted">Nos modèles et réalisations : trouvez votre prochain style et réservez-le.</p>
-      </div>
+    <>
+      <PageHero eyebrow="Inspiration" title="Galerie" text="Nos modèles et réalisations : trouvez votre prochain style et réservez-le." image="/images/coupe-enfant.webp" />
+      <div className="container page page-after-hero">
       <div className="filters">
         {cats.map((c) => (
           <button key={c} className={`chip-btn ${c === cat ? 'active' : ''}`} onClick={() => setCat(c)}>
@@ -34,7 +32,10 @@ export default function Gallery() {
       {loading ? (
         <Spinner />
       ) : shown.length === 0 ? (
-        <Empty icon="image" title="Les premiers modèles arrivent bientôt" />
+        <Empty icon="image" title="Les premiers modèles arrivent bientôt">
+          <p className="muted small">Le salon publie ses réalisations ici et dans la communauté.</p>
+          <Link to="/communaute" className="btn btn-outline btn-sm">Voir la communauté</Link>
+        </Empty>
       ) : (
         <div className="masonry">
           {shown.map((h) => (
@@ -66,6 +67,7 @@ export default function Gallery() {
           <Link to={`/reserver?style=${encodeURIComponent(open.title)}`} className="btn btn-gold btn-block">Je veux ce modèle</Link>
         </Modal>
       )}
-    </div>
+      </div>
+    </>
   )
 }

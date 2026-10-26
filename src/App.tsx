@@ -4,6 +4,7 @@ import { RequireAdmin, RequireUser } from './components/Guards'
 import Home from './pages/Home'
 import Services from './pages/Services'
 import Gallery from './pages/Gallery'
+import Salon from './pages/Salon'
 import Booking from './pages/Booking'
 import Community from './pages/Community'
 import Login from './pages/Login'
@@ -24,6 +25,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="prestations" element={<Services />} />
         <Route path="galerie" element={<Gallery />} />
+        <Route path="salon" element={<Salon />} />
         <Route path="reserver" element={<Booking />} />
         <Route path="communaute" element={<Community />} />
         <Route path="connexion" element={<Login />} />

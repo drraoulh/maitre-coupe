@@ -39,6 +39,8 @@ export interface Settings {
   salon_photo: string // photo réelle du salon (section « Le salon »)
   owner_photo: string // photo du gérant
   owner_name: string // nom du gérant (facultatif)
+  owner_bio: string // quelques mots du gérant (facultatif)
+  amenities: string[] // atouts du salon (une ligne chacun)
   hours: DayHours[] // index 0 = dimanche … 6 = samedi
 }
 

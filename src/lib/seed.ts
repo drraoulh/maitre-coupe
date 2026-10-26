@@ -26,6 +26,9 @@ export const DEFAULT_SETTINGS: Settings = {
   salon_photo: '/images/salle-soins.webp',
   owner_photo: '/images/fondateur.webp',
   owner_name: '',
+  owner_bio: '',
+  // Atouts visibles sur les photos du salon et sa carte de visite
+  amenities: ['Salle climatisée', 'Écrans TV dans le salon', 'Cabine de soins privée', 'Fauteuils de coiffure confortables', 'Coiffure à domicile', 'Formations en coiffure et esthétique'],
   hours: [
     { open: '12:00', close: '21:30', closed: false }, // dimanche
     { open: '07:00', close: '21:00', closed: false }, // lundi

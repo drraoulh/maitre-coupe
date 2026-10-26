@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
@@ -13,6 +14,10 @@ export default function Home() {
   const services = useLoad(() => api.listServices())
   const styles = useLoad(() => api.listHairstyles())
   const posts = useLoad(() => api.listPosts())
+
+  useEffect(() => {
+    document.title = `${settings.name} — Coiffure, beauté & bien-être à ${settings.city}`
+  }, [settings.name, settings.city])
 
   const now = new Date()
   const today = settings.hours[now.getDay()]
@@ -224,9 +229,9 @@ export default function Home() {
               <a className="btn btn-gold" href={mapsUrl} target="_blank" rel="noreferrer">
                 <Icon name="pin" /> Itinéraire
               </a>
-              <a className="btn btn-outline" href={`tel:${settings.phone.replace(/\s/g, '')}`}>
-                <Icon name="phone" /> Appeler
-              </a>
+              <Link className="btn btn-outline" to="/salon">
+                Découvrir le salon <Icon name="arrow" size={16} />
+              </Link>
             </div>
           </div>
           <div className="card hours-card">

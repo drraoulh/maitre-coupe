@@ -40,9 +40,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return api.onAuthChange(refreshUser)
   }, [refreshUser])
 
-  useEffect(() => {
-    document.title = `${settings.name} — Salon de coiffure & beauté`
-  }, [settings.name])
 
   const toast = useCallback((message: string, kind: Toast['kind'] = 'success') => {
     const id = Date.now() + Math.random()

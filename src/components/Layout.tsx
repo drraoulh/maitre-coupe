@@ -10,6 +10,7 @@ const LINKS = [
   { to: '/', label: 'Accueil', icon: 'home', end: true },
   { to: '/prestations', label: 'Soins & tarifs', short: 'Tarifs', icon: 'tag' },
   { to: '/galerie', label: 'Galerie', icon: 'image' },
+  { to: '/salon', label: 'Le salon', icon: 'pin', menuOnly: true },
   { to: '/communaute', label: 'Communauté', icon: 'users' },
 ]
 
@@ -127,7 +128,7 @@ export function Layout() {
       </footer>
 
       <nav className="tabbar" aria-label="Navigation principale">
-        {LINKS.map((l) => (
+        {LINKS.filter((l) => !l.menuOnly).map((l) => (
           <NavLink key={l.to} to={l.to} end={l.end} className="tab">
             <Icon name={l.icon} size={20} />
             <span>{l.short ?? l.label}</span>

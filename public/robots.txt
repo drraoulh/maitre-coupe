@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /mon-espace
+Sitemap: https://maitre-coupe.netlify.app/sitemap.xml

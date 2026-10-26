@@ -8,6 +8,7 @@ import {
 } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Spinner } from '../components/ui'
+import { PageHero } from '../components/PageHero'
 import type { Appointment, BusySlot } from '../types'
 
 const DAYS_AHEAD = 30
@@ -117,12 +118,9 @@ export default function Booking() {
   }
 
   return (
-    <div className="container page narrow">
-      <div className="page-head">
-        <span className="eyebrow">Réservation</span>
-        <h1>Prendre rendez-vous</h1>
-        <p className="muted">Trois étapes, moins d’une minute.</p>
-      </div>
+    <>
+      <PageHero eyebrow="Réservation" title="Prendre rendez-vous" text="Choisissez votre soin, votre créneau, c’est réservé. Sans compte, en moins d’une minute." image="/images/coupe-enfant.webp" />
+      <div className="container page page-after-hero narrow">
 
       <form onSubmit={submit} className="booking">
         <section className="step">
@@ -228,6 +226,7 @@ export default function Booking() {
           {sending ? 'Envoi…' : 'Confirmer la réservation'}
         </button>
       </form>
-    </div>
+      </div>
+    </>
   )
 }
