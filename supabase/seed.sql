@@ -2,13 +2,17 @@
 -- Le catalogue des soins, les modèles et les prix sont publiés par l'admin depuis le site.
 update public.settings set data = '{
   "name": "Maître Coupe",
-  "tagline": "Coiffure · Beauté · Bien-être",
+  "tagline": "L’univers de la Beauté",
   "address": "Nkolmesseng, face à Guiko Center",
   "city": "Yaoundé",
   "phone": "+237 657 75 58 68",
+  "phone2": "+237 653 22 90 36",
   "whatsapp": "237657755868",
+  "email": "maitrecoupe@gmail.com",
   "currency": "FCFA",
   "google_url": "https://g.page/maitre-coupe",
   "google_rating": 4.6,
-  "google_reviews": 25
+  "google_reviews": 25,
+  "salon_photo": "/images/salle-soins.webp",
+  "owner_photo": "/images/fondateur.webp"
 }'::jsonb where id = 1;

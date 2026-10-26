@@ -8,8 +8,15 @@ export const UNIVERS = [
   { name: 'Massages', icon: 'lotus', text: 'Massages de bien-être pour relâcher les tensions.' },
 ] as const
 
+/** Services complémentaires (carte de visite du salon). */
+export const EXTRAS = [
+  { name: 'Coiffure à domicile', icon: 'home', text: 'Nous venons chez vous pour vos coiffures et soins.' },
+  { name: 'Formation', icon: 'cap', text: 'Apprenez les métiers de la coiffure et de l’esthétique.' },
+  { name: 'Produits & accessoires', icon: 'bag', text: 'Vente de produits et accessoires de beauté.' },
+] as const
+
 /** Catégories proposées à l'admin pour les soins et la galerie. */
-export const CATEGORIES = [...UNIVERS.map((u) => u.name), 'Formules']
+export const CATEGORIES = [...UNIVERS.map((u) => u.name), 'Formules', ...EXTRAS.map((e) => e.name)]
 
 /** Ordre d'affichage : univers d'abord, puis catégories libres éventuelles. */
 export function sortCategories(cats: string[]): string[] {

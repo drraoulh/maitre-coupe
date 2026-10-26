@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
-import { UNIVERS } from '../lib/univers'
+import { EXTRAS, UNIVERS } from '../lib/univers'
 import { useLoad } from '../lib/useLoad'
 import { DAY_NAMES, formatDuration, formatPrice, toMinutes, whatsappLink } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Avatar, Img } from '../components/ui'
+import { LogoMark } from '../components/LogoMark'
 
 export default function Home() {
   const { settings } = useApp()
@@ -25,12 +26,18 @@ export default function Home() {
     <>
       <section className={`hero ${settings.hero_image ? '' : 'hero-plain'}`} style={settings.hero_image ? { backgroundImage: `url(${settings.hero_image})` } : undefined}>
         <div className="hero-overlay" />
+        {!settings.hero_image && (
+          <div className="hero-emblem" aria-hidden="true">
+            {settings.logo_url ? <img src={settings.logo_url} alt="" /> : <LogoMark size={340} full />}
+          </div>
+        )}
         <div className="container hero-content">
           <span className={`pill ${isOpen ? 'pill-open' : 'pill-closed'}`}>
             <span className="dot" /> {isOpen ? `Ouvert · jusqu’à ${today.close}` : `Fermé · ouvre à ${settings.hours[(now.getDay() + (nowMin >= toMinutes(today.close) ? 1 : 0)) % 7].open}`}
           </span>
           <span className="hero-eyebrow">Salon de coiffure · Institut de beauté · Bien-être</span>
           <h1>{settings.name}</h1>
+          {settings.tagline && <p className="hero-slogan">{settings.tagline}</p>}
           <p className="hero-tagline">
             <Icon name="pin" size={18} /> {settings.address}, {settings.city}
           </p>
@@ -69,6 +76,17 @@ export default function Home() {
                 <span className="univers-icon"><Icon name={u.icon} size={26} /></span>
                 <strong>{u.name}</strong>
                 <span className="muted small">{u.text}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="extras">
+            {EXTRAS.map((e) => (
+              <Link key={e.name} to={`/prestations?univers=${encodeURIComponent(e.name)}`} className="extra">
+                <span className="extra-icon"><Icon name={e.icon} size={20} /></span>
+                <span>
+                  <strong>{e.name}</strong>
+                  <span className="muted small">{e.text}</span>
+                </span>
               </Link>
             ))}
           </div>
@@ -165,6 +183,22 @@ export default function Home() {
             <span className="eyebrow">Le salon</span>
             <h2>Bienvenue chez {settings.name}</h2>
             <p className="lead">{settings.about}</p>
+            {(settings.salon_photo || settings.owner_photo) && (
+              <div className="about-photos">
+                {settings.salon_photo && (
+                  <figure>
+                    <Img src={settings.salon_photo} alt={`Cabine de soins ${settings.name}`} />
+                    <figcaption>Notre cabine de soins</figcaption>
+                  </figure>
+                )}
+                {settings.owner_photo && (
+                  <figure className="about-owner">
+                    <Img src={settings.owner_photo} alt={settings.owner_name || `Le gérant de ${settings.name}`} />
+                    <figcaption>{settings.owner_name || 'Votre Maître Coupe'}</figcaption>
+                  </figure>
+                )}
+              </div>
+            )}
             <div className="about-actions">
               <a className="btn btn-gold" href={mapsUrl} target="_blank" rel="noreferrer">
                 <Icon name="pin" /> Itinéraire

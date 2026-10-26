@@ -49,7 +49,10 @@ export default function SettingsAdmin() {
         <div className="form-grid">
           <ImagePicker label="Logo" value={f.logo_url || null} onChange={(u) => set('logo_url', u ?? '')} upload={(file) => api.uploadImage(file)} />
           <ImagePicker label="Photo de couverture (accueil)" value={f.hero_image || null} onChange={(u) => set('hero_image', u ?? '')} upload={(file) => api.uploadImage(file)} />
+          <ImagePicker label="Photo du salon" value={f.salon_photo || null} onChange={(u) => set('salon_photo', u ?? '')} upload={(file) => api.uploadImage(file)} />
+          <ImagePicker label="Photo du gérant" value={f.owner_photo || null} onChange={(u) => set('owner_photo', u ?? '')} upload={(file) => api.uploadImage(file)} />
         </div>
+        {text('owner_name', 'Nom du gérant (affiché sous sa photo)')}
       </section>
 
       <section className="card card-pad">
@@ -57,7 +60,8 @@ export default function SettingsAdmin() {
         <div className="form-grid">
           {text('address', 'Adresse')}
           {text('city', 'Ville')}
-          {text('phone', 'Téléphone affiché')}
+          {text('phone', 'Téléphone principal')}
+          {text('phone2', 'Second téléphone')}
           {text('whatsapp', 'Numéro WhatsApp (format international sans +, ex. 237657755868)', { inputMode: 'numeric' })}
           {text('email', 'E-mail', { type: 'email' })}
           {text('instagram', 'Lien Instagram', { type: 'url', placeholder: 'https://instagram.com/…' })}

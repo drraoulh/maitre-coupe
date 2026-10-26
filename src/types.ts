@@ -22,6 +22,7 @@ export interface Settings {
   address: string
   city: string
   phone: string
+  phone2: string // second numéro (facultatif)
   whatsapp: string // numéro international sans "+" ni espaces, ex. 242061234567
   email: string
   instagram: string
@@ -35,6 +36,9 @@ export interface Settings {
   google_url: string // fiche Google du salon
   google_rating: number // note affichée (ex. 4.6)
   google_reviews: number // nombre d'avis
+  salon_photo: string // photo réelle du salon (section « Le salon »)
+  owner_photo: string // photo du gérant
+  owner_name: string // nom du gérant (facultatif)
   hours: DayHours[] // index 0 = dimanche … 6 = samedi
 }
 

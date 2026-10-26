@@ -32,7 +32,7 @@ interface StoredComment {
 
 export const DEMO_ADMIN = { email: 'admin@maitre-coupe.com', password: 'admin123' }
 
-const KEY = 'mc_demo_v2_'
+const KEY = 'mc_demo_v3_'
 
 function read<T>(name: string, fallback: T): T {
   try {
@@ -68,7 +68,7 @@ function seedIfNeeded() {
     {
       id: uid(),
       author_id: adminId,
-      content: "Bienvenue dans la communauté Maître Coupe ! ✨ Coiffure, soins du visage, hammam, gommage, manucure, pédicure et massages à Nkolmesseng, face à Guiko Center. Partagez vos looks et vos avis !",
+      content: "Bienvenue dans la communauté Maître Coupe ! ✨ L’univers de la Beauté à Nkolmesseng, face à Guiko Center : coiffure, soins du visage, hammam, gommage, manucure, pédicure, massages, et coiffure à domicile. Partagez vos looks et vos avis !",
       image_url: null,
       created_at: new Date(now - 86400_000).toISOString(),
     },

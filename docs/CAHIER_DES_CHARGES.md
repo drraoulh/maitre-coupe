@@ -31,15 +31,18 @@ Beautés du Monde (Bastos), Majestic Spa, Relooker Boys/Girls. Quasi tous sont d
 | Nom commercial | Maître Coupe / Maître-Coupe | Facebook, annuaires | ✅ |
 | Activité | Coiffure mixte, esthétique, bien-être | Facebook, AfricaBizInfo | ✅ |
 | Adresse | Nkolmesseng, **face à Guiko Center**, Yaoundé (Yaoundé V) | Facebook | ✅ |
-| Téléphone | **+237 657 75 58 68** | Facebook, AfricaBizInfo, Pages Jaunes, Go Africa Online, Cybo | ✅ |
+| Slogan | **« L'univers de la Beauté »** | Carte de visite | ✅ |
+| Téléphones | **+237 657 75 58 68** (WhatsApp) · **+237 653 22 90 36** | Carte de visite + annuaires | ✅ |
+| E-mail | **maitrecoupe@gmail.com** | Carte de visite | ✅ |
+| NIU (identifiant fiscal) | P028817686391X | Carte de visite | ℹ️ non affiché sur le site |
 | WhatsApp (prise de RDV) | Lien existant : `wa.me/message/LSCNTSUAUE4CP1` | AfricaBizInfo | ❓ à tester |
 | Fiche Google | `g.page/maitre-coupe` — **4,6/5 sur 25 avis** | AfricaBizInfo (avis repris de Google) | ✅ existe |
 | Page Facebook officielle | facebook.com/901322259739304 | beautynailhairsalons | ❓ (une 2e page existe : 102573512366310) |
-| Ouverture | 2021 · entreprise dirigée par une femme | AfricaBizInfo | ❓ |
+| Ouverture | 2021 | AfricaBizInfo | ❓ |
+| Gérant | Photo fournie (affichée dans « Le salon ») | Gérant | ✅ nom à préciser |
 | Équipements | Wi-Fi, toilettes, parking, accessible, adapté aux enfants · paiement espèces / sans contact | AfricaBizInfo | ❓ |
 | Tarifs | Non publiés | — | ❓ à fournir |
-| E-mail / site officiel | Aucun trouvé | — | ⚠️ |
-| Logo | Existant | Gérant | ⏳ en attente |
+| Logo | « MC » or sur noir, bandeau « Esthétique · Coiffure » — redessiné en vectoriel d'après la carte | Carte de visite | ✅ (fichier original bienvenu) |
 
 ### ⚠️ Horaires : deux versions différentes en ligne
 
@@ -65,6 +68,8 @@ Six univers, tirés de la présentation publique du salon. **Aucun prix, durée 
 | 🌿 **Gommage corporel** | Exfoliation, soins du corps | Produits (savon noir, café, sucre…), prix |
 | 💅 **Manucure & pédicure** | Mains et pieds | Vernis simple / semi-permanent, prix |
 | 💆 **Massages** | Bien-être | Types (relaxant, dos…), durées, prix |
+
+**Services complémentaires (carte de visite) :** 🏠 **Coiffure à domicile** · 🎓 **Formation** · 🛍️ **Vente de produits et accessoires de beauté**.
 
 **Idée forte : les formules / forfaits**, très courants chez les concurrents (ex. « Hammam + gommage + pédicure »).
 Exemples à valider : *Rituel détente* (hammam + gommage + massage), *Beauté complète* (coiffure + manucure + pédicure), *Spécial mariée*.
@@ -178,7 +183,7 @@ publications / likes / commentaires
 3. Le lien WhatsApp `wa.me/message/LSCNTSUAUE4CP1` fonctionne-t-il ? Quelle page Facebook est l'officielle ?
 4. **Équipe** : combien de postes / cabines peuvent travailler en même temps ?
 5. Communauté : publications clients visibles tout de suite ou validées par l'admin ?
-6. **Logo** (PNG transparent ou SVG) et **vraies photos** du salon et des réalisations.
+6. ~~Logo~~ → redessiné d'après la carte. Encore utile : **nom du gérant**, et d'autres **vraies photos** (salon, coiffures, ongles).
 
 ---
 

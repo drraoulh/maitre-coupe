@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from './Icon'
 import { initials, whatsappLink } from '../lib/utils'
 import { useApp } from '../context/AppContext'
+import { LogoMark } from './LogoMark'
 
 /** Image avec repli élégant si le lien est cassé ou absent. */
 export function Img({ src, alt, className }: { src: string | null | undefined; alt: string; className?: string }) {
@@ -130,7 +131,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       {settings.logo_url ? (
         <img src={settings.logo_url} alt={settings.name} className="brand-logo" />
       ) : (
-        <span className="brand-mark" aria-hidden="true">MC</span>
+        <LogoMark size={44} className="brand-svg" />
       )}
       {!compact && (
         <span className="brand-text">

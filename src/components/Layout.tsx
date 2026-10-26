@@ -89,7 +89,13 @@ export function Layout() {
           <div>
             <h4>Contact</h4>
             <p className="footer-line"><Icon name="pin" size={16} /> {settings.address}, {settings.city}</p>
-            <p className="footer-line"><Icon name="phone" size={16} /> <a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a></p>
+            <p className="footer-line">
+              <Icon name="phone" size={16} /> <a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a>
+              {settings.phone2 && <> · <a href={`tel:${settings.phone2.replace(/\s/g, '')}`}>{settings.phone2}</a></>}
+            </p>
+            {settings.email && (
+              <p className="footer-line"><Icon name="mail" size={16} /> <a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+            )}
             {settings.whatsapp && (
               <p className="footer-line">
                 <Icon name="whatsapp" size={16} />{' '}

@@ -2407,25 +2407,124 @@ body:has(.admin) {
   background: linear-gradient(180deg, transparent, var(--bg) 40%);
 }
 
-/* Monogramme décoratif du héros (grands écrans, sans photo de couverture) */
+/* Emblème du héros (grands écrans, sans photo de couverture) */
+.hero-emblem {
+  display: none;
+}
+
 @media (min-width: 900px) {
-  .hero-plain::after {
-    content: 'MC';
+  .hero-emblem {
+    display: block;
     position: absolute;
-    right: 6%;
+    right: 7%;
     top: 50%;
-    transform: translateY(-50%);
-    width: 380px;
-    height: 380px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    border: 2px solid rgba(212, 166, 74, 0.28);
-    box-shadow: inset 0 0 0 14px rgba(13, 11, 9, 0.6), inset 0 0 0 16px rgba(212, 166, 74, 0.14);
-    font-family: var(--font-title);
-    font-size: 150px;
-    font-weight: 700;
-    color: rgba(212, 166, 74, 0.16);
-    pointer-events: none;
+    transform: translateY(-50%) rotate(-4deg);
+    filter: drop-shadow(0 20px 50px rgba(212, 166, 74, 0.18));
+    opacity: 0.95;
   }
+
+  .hero-emblem img {
+    width: 340px;
+    height: 340px;
+    object-fit: contain;
+  }
+}
+
+.hero-slogan {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  color: #f4eee5;
+  margin: -4px 0 14px;
+}
+
+.brand-svg {
+  flex-shrink: 0;
+  border-radius: 9px;
+}
+
+/* Services complémentaires */
+.extras {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (min-width: 760px) {
+  .extras {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+.extra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px dashed var(--border-strong);
+  color: var(--text);
+  text-decoration: none !important;
+}
+
+.extra:hover {
+  border-color: var(--gold-3);
+}
+
+.extra > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.extra-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gold-grad);
+  color: #1a1206;
+  flex-shrink: 0;
+}
+
+/* Photos du salon */
+.about-photos {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 12px;
+  margin: 18px 0 4px;
+}
+
+.about-photos figure {
+  margin: 0;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.about-photos img,
+.about-photos .img-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.about-owner img {
+  object-position: center 20%;
+}
+
+.about-photos figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 10px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.85));
+  color: var(--gold-2);
 }
