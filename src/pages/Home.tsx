@@ -24,41 +24,62 @@ export default function Home() {
 
   return (
     <>
-      <section className={`hero ${settings.hero_image ? '' : 'hero-plain'}`} style={settings.hero_image ? { backgroundImage: `url(${settings.hero_image})` } : undefined}>
-        <div className="hero-overlay" />
-        {!settings.hero_image && (
-          <div className="hero-emblem" aria-hidden="true">
-            {settings.logo_url ? <img src={settings.logo_url} alt="" /> : <LogoMark size={340} full />}
-          </div>
+      <section className="hero">
+        {settings.hero_image ? (
+          <img className="hero-bg" src={settings.hero_image} alt="" />
+        ) : (
+          <picture>
+            <source media="(min-width: 900px)" srcSet="/images/salon-interieur.webp" />
+            <img className="hero-bg" src="/images/coupe-enfant.webp" alt={`Le salon ${settings.name}`} />
+          </picture>
         )}
+        <div className="hero-overlay" />
         <div className="container hero-content">
-          <span className={`pill ${isOpen ? 'pill-open' : 'pill-closed'}`}>
-            <span className="dot" /> {isOpen ? `Ouvert · jusqu’à ${today.close}` : `Fermé · ouvre à ${settings.hours[(now.getDay() + (nowMin >= toMinutes(today.close) ? 1 : 0)) % 7].open}`}
-          </span>
-          <span className="hero-eyebrow">Salon de coiffure · Institut de beauté · Bien-être</span>
-          <h1>{settings.name}</h1>
-          {settings.tagline && <p className="hero-slogan">{settings.tagline}</p>}
-          <p className="hero-tagline">
-            <Icon name="pin" size={18} /> {settings.address}, {settings.city}
-          </p>
-          <div className="hero-actions">
-            <Link to="/reserver" className="btn btn-gold btn-lg">
-              <Icon name="calendar" /> Prendre rendez-vous
-            </Link>
-            {settings.whatsapp && (
-              <a className="btn btn-outline btn-lg" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, je souhaite prendre rendez-vous.`)} target="_blank" rel="noreferrer">
-                <Icon name="whatsapp" /> WhatsApp
+          <div className="hero-text">
+            <span className={`pill ${isOpen ? 'pill-open' : 'pill-closed'}`}>
+              <span className="dot" /> {isOpen ? `Ouvert · jusqu’à ${today.close}` : `Fermé · ouvre à ${settings.hours[(now.getDay() + (nowMin >= toMinutes(today.close) ? 1 : 0)) % 7].open}`}
+            </span>
+            <br />
+            <span className="hero-eyebrow">Coiffure · Institut de beauté · Bien-être</span>
+            <h1>{settings.name}</h1>
+            {settings.tagline && <p className="hero-slogan">{settings.tagline}</p>}
+            <p className="hero-tagline">
+              <Icon name="pin" size={18} /> {settings.address}, {settings.city}
+            </p>
+            <div className="hero-actions">
+              <Link to="/reserver" className="btn btn-gold btn-lg">
+                <Icon name="calendar" /> Prendre rendez-vous
+              </Link>
+              {settings.whatsapp && (
+                <a className="btn btn-light btn-lg" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, je souhaite prendre rendez-vous.`)} target="_blank" rel="noreferrer">
+                  <Icon name="whatsapp" /> WhatsApp
+                </a>
+              )}
+            </div>
+            {settings.google_rating > 0 && (
+              <a className="rating" href={settings.google_url || '#'} target="_blank" rel="noreferrer">
+                <span className="stars" aria-hidden="true">★★★★★</span>
+                <strong>{settings.google_rating.toLocaleString('fr-FR')}/5</strong>
+                <span>· {settings.google_reviews} avis Google</span>
               </a>
             )}
           </div>
-          {settings.google_rating > 0 && (
-            <a className="rating" href={settings.google_url || '#'} target="_blank" rel="noreferrer">
-              <span className="stars" aria-hidden="true">★★★★★</span>
-              <strong>{settings.google_rating.toLocaleString('fr-FR')}/5</strong>
-              <span>· {settings.google_reviews} avis Google</span>
-            </a>
+          {!settings.hero_image && (
+            <div className="hero-card" aria-hidden="true">
+              <img src="/images/coupe-enfant.webp" alt="" />
+              <div className="hero-badge">
+                {settings.logo_url ? <img src={settings.logo_url} alt="" width={40} height={40} /> : <LogoMark size={40} className="hero-badge-logo" />}
+                <span>
+                  <strong>Petits & grands</strong>
+                  <span className="muted">Coiffure mixte</span>
+                </span>
+              </div>
+            </div>
           )}
         </div>
+        <svg className="hero-wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 48h1440V18c-160 18-360 30-720 14S160 6 0 22Z" fill="currentColor" />
+        </svg>
       </section>
 
       <section className="section">

@@ -15,7 +15,7 @@
 C'est ce que dit le salon lui-même sur Facebook :
 « Pour tous vos soins du visage, hammam, gommage corporel, pédicure manucure, coiffure mixte, massage etc. »
 
-Le site doit donc donner l'image d'un **espace de soin et de détente complet**, haut de gamme (noir & or),
+Le site doit donc donner l'image d'un **espace de soin et de détente complet**, moderne, aux couleurs du vrai salon (bleu ciel du plafond, rouge des fauteuils, bois, crème ; or réservé au logo),
 où l'on vient pour une coupe **et** pour se faire chouchouter.
 
 **Concurrence directe à Yaoundé (même positionnement « coiffure + spa ») :** Spectra, Celka Beauty and Spa (Nlongkak),
@@ -161,7 +161,7 @@ publications / likes / commentaires
 
 | Étape | Contenu | Résultat testable |
 |---|---|---|
-| **1. Fondations** ✅ | Identité noir & or + logo, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
+| **1. Fondations** ✅ | Identité aux couleurs du salon + logo + photo plein cadre, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
 | **2. Vitrine** | Accueil, Nos soins & tarifs (6 univers + formules), Galerie, Le salon | Montrer le site aux clients |
 | **3. Réservation** | Sans compte, créneaux libres, WhatsApp au salon | Prendre un vrai RDV |
 | **4. Admin** | Tableau de bord, RDV, soins & prix, galerie, paramètres | Gérer le salon depuis le téléphone |
@@ -175,7 +175,7 @@ publications / likes / commentaires
 
 ## 9. Décisions
 
-**Validé ✅** : horaires version A (lun–sam 7h–21h, dim 12h–21h30) · soins, modèles et prix publiés par l’admin, qui peut aussi les publier dans la communauté · FCFA / Cameroun · réservation sans compte · noir & or + logo existant · positionnement coiffure + beauté + bien-être.
+**Validé ✅** : horaires version A (lun–sam 7h–21h, dim 12h–21h30) · soins, modèles et prix publiés par l’admin, qui peut aussi les publier dans la communauté · FCFA / Cameroun · réservation sans compte · couleurs du salon (bleu ciel, rouge, bois, crème) + logo redessiné · positionnement coiffure + beauté + bien-être.
 
 **À fournir / confirmer par le salon ❓**
 1. ~~Horaires~~ → version A retenue.
