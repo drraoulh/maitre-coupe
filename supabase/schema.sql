@@ -147,6 +147,38 @@ drop policy if exists "client annule son rendez-vous" on public.appointments;
 create policy "client annule son rendez-vous" on public.appointments for update
   using (user_id = auth.uid()) with check (user_id = auth.uid() and status = 'cancelled');
 
+-- Refuse un rendez-vous si le créneau est complet (nombre de postes atteint) ou dans le passé.
+-- L'admin peut toujours ajouter un rendez-vous (client venu sur place, par exemple).
+create or replace function public.check_capacity() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  cap int;
+  n int;
+begin
+  if public.is_admin() or new.status = 'cancelled' then
+    return new;
+  end if;
+  if new.date < (now() at time zone 'Africa/Douala')::date then
+    raise exception 'Cette date est déjà passée.';
+  end if;
+  -- Évite que deux clients prennent le dernier créneau au même instant
+  perform pg_advisory_xact_lock(hashtext('rdv-' || new.date::text));
+  select greatest(coalesce((data->>'capacity')::int, 1), 1) into cap from public.settings where id = 1;
+  select count(*) into n from public.appointments a
+  where a.date = new.date and a.status <> 'cancelled' and a.id <> new.id
+    and a.time::time < new.time::time + make_interval(mins => new.duration)
+    and new.time::time < a.time::time + make_interval(mins => a.duration);
+  if n >= coalesce(cap, 1) then
+    raise exception 'Ce créneau vient d''être réservé. Choisissez un autre horaire.';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists appointments_check_capacity on public.appointments;
+create trigger appointments_check_capacity before insert on public.appointments
+  for each row execute function public.check_capacity();
+
 -- Créneaux occupés d'une journée (sans exposer les noms des clients)
 drop function if exists public.busy_slots(date);
 create or replace function public.busy_slots(d date)

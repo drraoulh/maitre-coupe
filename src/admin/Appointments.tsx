@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
-import { STATUS_LABELS, errorMessage, formatDate, formatDuration, formatPrice, toISODate } from '../lib/utils'
+import { STATUS_LABELS, bookingRef, errorMessage, formatDate, formatDuration, formatPrice, toISODate } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Empty, Modal, Spinner } from '../components/ui'
 import type { AppointmentStatus } from '../types'
@@ -73,7 +73,7 @@ export default function Appointments() {
               <div key={a.id} className={`card appt-row ${a.status === 'cancelled' ? 'faded' : ''}`}>
                 <div className="appt-time">{a.time}</div>
                 <div className="appt-info">
-                  <strong>{a.client_name}</strong>
+                  <strong>{a.client_name} <span className="ref-sm">{bookingRef(a.id)}</span></strong>
                   <span className="muted small">{a.client_phone}</span>
                   <span className="small">{a.service_name} · {formatDuration(a.duration)} · {formatPrice(a.price, settings.currency)}</span>
                   {a.note && <span className="note">{a.note}</span>}

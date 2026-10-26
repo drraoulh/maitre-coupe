@@ -1,6 +1,6 @@
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
-import { errorMessage, formatDate, whatsappLink } from '../lib/utils'
+import { bookingRef, errorMessage, formatDate, whatsappLink } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import type { Appointment, AppointmentStatus } from '../types'
 
@@ -18,7 +18,7 @@ export function ApptActions({ a, onChange }: { a: Appointment; onChange: () => v
     }
   }
 
-  const confirmMsg = `Bonjour ${a.client_name}, ${settings.name} confirme votre rendez-vous « ${a.service_name} » le ${formatDate(a.date)} à ${a.time}. À bientôt !`
+  const confirmMsg = `Bonjour ${a.client_name}, ${settings.name} confirme votre rendez-vous « ${a.service_name} » le ${formatDate(a.date)} à ${a.time} (réf. ${bookingRef(a.id)}). Adresse : ${settings.address}, ${settings.city}. À bientôt !`
   const phone = a.client_phone.replace(/[^\d+]/g, '')
 
   return (

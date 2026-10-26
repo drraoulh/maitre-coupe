@@ -146,3 +146,65 @@ export function errorMessage(e: unknown): string {
   if (e && typeof e === 'object' && 'message' in e) return String((e as { message: unknown }).message)
   return 'Une erreur est survenue'
 }
+
+/**
+ * Numéro camerounais : accepte « 657755868 », « 6 57 75 58 68 », « +237 657… », « 00237… ».
+ * Renvoie « +237 657 75 58 68 », ou null si le numéro n'est pas valide.
+ */
+export function normalizeCameroonPhone(input: string): string | null {
+  let d = input.replace(/[^\d]/g, '')
+  if (d.startsWith('00237')) d = d.slice(5)
+  else if (d.startsWith('237') && d.length === 12) d = d.slice(3)
+  if (!/^[26]\d{8}$/.test(d)) return null
+  return `+237 ${d.slice(0, 3)} ${d.slice(3, 5)} ${d.slice(5, 7)} ${d.slice(7, 9)}`
+}
+
+/** Référence courte et lisible d'un rendez-vous (ex. « MC-4F7A2C »). */
+export function bookingRef(id: string): string {
+  return `MC-${id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase()}`
+}
+
+/** Moment de la journée d'un créneau. */
+export function dayPart(time: string): 'Matin' | 'Après-midi' | 'Soir' {
+  const m = toMinutes(time)
+  if (m < 12 * 60) return 'Matin'
+  if (m < 17 * 60) return 'Après-midi'
+  return 'Soir'
+}
+
+/** Fichier agenda (.ics) pour ajouter le rendez-vous au calendrier du téléphone. */
+export function calendarFile(opts: { title: string; date: string; time: string; duration: number; location: string; description: string }): string {
+  const [y, mo, d] = opts.date.split('-')
+  const start = `${y}${mo}${d}T${opts.time.replace(':', '')}00`
+  const endMin = toMinutes(opts.time) + opts.duration
+  const end = `${y}${mo}${d}T${fromMinutes(Math.min(endMin, 23 * 60 + 59)).replace(':', '')}00`
+  const esc = (t: string) => t.replace(/[\\,;]/g, (c) => `\\${c}`).replace(/\n/g, '\\n')
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Maitre Coupe//Reservation//FR',
+    'BEGIN:VEVENT',
+    `UID:${start}-${Math.random().toString(36).slice(2)}@maitre-coupe`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
+    `DTSTART;TZID=Africa/Douala:${start}`,
+    `DTEND;TZID=Africa/Douala:${end}`,
+    `SUMMARY:${esc(opts.title)}`,
+    `LOCATION:${esc(opts.location)}`,
+    `DESCRIPTION:${esc(opts.description)}`,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT2H',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${esc(opts.title)}`,
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n')
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`
+}
+
+/** Deux créneaux se chevauchent-ils ? */
+export function overlaps(aTime: string, aDur: number, bTime: string, bDur: number): boolean {
+  const a = toMinutes(aTime)
+  const b = toMinutes(bTime)
+  return a < b + bDur && b < a + aDur
+}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
-import { STATUS_LABELS, errorMessage, formatDate, formatPrice, toISODate } from '../lib/utils'
+import { STATUS_LABELS, bookingRef, errorMessage, formatDate, formatPrice, toISODate } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Empty, ImagePicker, Spinner } from '../components/ui'
 
@@ -79,7 +79,7 @@ export default function Account() {
                 <div className="appt-info">
                   <strong>{a.service_name}</strong>
                   <span className="muted small">{formatDate(a.date)} · {formatPrice(a.price, settings.currency)}</span>
-                  <span className={`status status-${a.status}`}>{STATUS_LABELS[a.status]}</span>
+                  <span className="row-start"><span className={`status status-${a.status}`}>{STATUS_LABELS[a.status]}</span> <span className="ref-sm">{bookingRef(a.id)}</span></span>
                 </div>
                 <button className="btn btn-ghost btn-sm" onClick={() => cancel(a.id)}>Annuler</button>
               </div>

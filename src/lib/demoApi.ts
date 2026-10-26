@@ -6,7 +6,7 @@
 import type { Api } from './api'
 import type { Appointment, Comment, Hairstyle, Post, Profile, Service, Settings } from '../types'
 import { DEFAULT_SETTINGS } from './seed'
-import { blobToDataURL, compressImage, uid } from './utils'
+import { blobToDataURL, compressImage, overlaps, uid } from './utils'
 
 interface StoredUser extends Profile {
   password: string
@@ -211,6 +211,11 @@ export function createDemoApi(): Api {
       )
     },
     async createAppointment(input) {
+      // Même règle que la base Supabase : pas plus de rendez-vous simultanés que de postes (sauf pour l'admin).
+      const all = read<Appointment[]>('appointments', [])
+      const cap = Math.max(1, read<Partial<Settings>>('settings', {}).capacity ?? DEFAULT_SETTINGS.capacity)
+      const taken = all.filter((a) => a.date === input.date && a.status !== 'cancelled' && overlaps(a.time, a.duration, input.time, input.duration)).length
+      if (me()?.role !== 'admin' && taken >= cap) throw new Error('Ce créneau vient d’être réservé. Choisissez un autre horaire.')
       const appt: Appointment = {
         ...input,
         id: uid(),
@@ -218,7 +223,7 @@ export function createDemoApi(): Api {
         status: 'pending',
         created_at: new Date().toISOString(),
       }
-      write('appointments', [...read<Appointment[]>('appointments', []), appt])
+      write('appointments', [...all, appt])
       return appt
     },
     async listAppointments() {
