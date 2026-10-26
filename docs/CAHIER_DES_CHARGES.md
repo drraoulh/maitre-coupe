@@ -12,13 +12,16 @@
 | Nom | Maître Coupe | ✅ |
 | Ville / quartier | Yaoundé — **Nkolmesseng** | ✅ (donné par le gérant) |
 | Pays / devise | Cameroun — **FCFA** — indicatif **+237** | ✅ |
-| Téléphone trouvé en ligne | +237 6 57 75 58 68 (annuaire Pages Jaunes « Maitre-coupe », Yaoundé) | ❓ à confirmer |
-| Présence en ligne | Aucune fiche Google Maps, Facebook, Instagram ou TikTok trouvée ; aucun avis client en ligne | ⚠️ |
+| Téléphone | **+237 6 57 75 58 68** — trouvé dans 2 annuaires (Pages Jaunes, AfricaBizInfo) | ✅ probable, WhatsApp ❓ |
+| Pages Facebook | **Deux pages** référencées par les annuaires : identifiants `901322259739304` (« Maître Coupe ») et `102573512366310` (« Maitre Coupe ») | ❓ laquelle est l'officielle ? |
+| Autres annuaires | beautynailhairsalons.com, findglocal.com (copies des pages Facebook), africabizinfo.com | ℹ️ |
+| Google Maps / Instagram / TikTok | Rien trouvé | ⚠️ |
 | Site actuel | maitre-coupe.netlify.app | ✅ |
 | Logo | Existant, envoyé par le gérant | ⏳ en attente |
 | Couleurs | **Noir & or** | ✅ |
 
-**Ce que ça veut dire :** le salon est quasiment invisible sur internet. L'application doit donc
+**Ce que ça veut dire :** le salon a une petite présence (Facebook + annuaires), mais **dispersée** (deux pages Facebook)
+et sans fiche Google Maps. L'application doit donc
 aussi servir à **se faire trouver** (Google, partage WhatsApp, réseaux sociaux), pas seulement à réserver.
 
 **Contexte du marché à Yaoundé :**
@@ -171,7 +174,7 @@ docs/           ce cahier des charges
 - Identité noir & or, avec le logo existant
 
 **Encore à décider ❓**
-1. Le numéro **+237 6 57 75 58 68** est-il bien celui du salon ? Est-ce aussi le **WhatsApp** ?
+1. Le numéro **+237 6 57 75 58 68** est-il aussi le **WhatsApp** ? Laquelle des **deux pages Facebook** est l'officielle (à lier depuis le site) ?
 2. **Coiffeurs** : combien de coiffeurs ? Le client choisit-il son coiffeur dès la version 1 ?
 3. **Communauté** : publications des clients visibles tout de suite, ou validées par l'admin d'abord ?
 4. **Paiement Mobile Money** : version 1 ou plus tard ?
