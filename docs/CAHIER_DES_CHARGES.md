@@ -1,182 +1,189 @@
-# Maître Coupe — Cahier des charges (à valider)
+# Maître Coupe — Cahier des charges (v2, à valider)
 
 > Ce document décrit **ce que l'application doit faire** avant de la développer.
-> Les points marqués ❓ sont des décisions à prendre ensemble.
+> ✅ = confirmé · ❓ = à confirmer par le salon · ⚠️ = point d'attention
 
 ---
 
-## 0. Ce qu'on sait du salon (recherches du 26/10/2026)
+## 0. Positionnement
 
-| Info | Valeur | Statut |
+**Maître Coupe n'est pas « un simple salon de coiffure » :**
+
+> **Maître Coupe — Salon de coiffure · Institut de beauté · Bien-être**
+> Nkolmesseng, Yaoundé — face à Guiko Center
+
+C'est ce que dit le salon lui-même sur Facebook :
+« Pour tous vos soins du visage, hammam, gommage corporel, pédicure manucure, coiffure mixte, massage etc. »
+
+Le site doit donc donner l'image d'un **espace de soin et de détente complet**, haut de gamme (noir & or),
+où l'on vient pour une coupe **et** pour se faire chouchouter.
+
+**Concurrence directe à Yaoundé (même positionnement « coiffure + spa ») :** Spectra, Celka Beauty and Spa (Nlongkak),
+Beautés du Monde (Bastos), Majestic Spa, Relooker Boys/Girls. Quasi tous sont dans les quartiers centraux :
+**Maître Coupe peut être *la* référence beauté & bien-être de Nkolmesseng / Yaoundé V.**
+
+---
+
+## 1. Fiche d'identité (recherches du 26/10/2026)
+
+| Information | Valeur | Source | Statut |
+|---|---|---|---|
+| Nom commercial | Maître Coupe / Maître-Coupe | Facebook, annuaires | ✅ |
+| Activité | Coiffure mixte, esthétique, bien-être | Facebook, AfricaBizInfo | ✅ |
+| Adresse | Nkolmesseng, **face à Guiko Center**, Yaoundé (Yaoundé V) | Facebook | ✅ |
+| Téléphone | **+237 657 75 58 68** | Facebook, AfricaBizInfo, Pages Jaunes, Go Africa Online, Cybo | ✅ |
+| WhatsApp (prise de RDV) | Lien existant : `wa.me/message/LSCNTSUAUE4CP1` | AfricaBizInfo | ❓ à tester |
+| Fiche Google | `g.page/maitre-coupe` — **4,6/5 sur 25 avis** | AfricaBizInfo (avis repris de Google) | ✅ existe |
+| Page Facebook officielle | facebook.com/901322259739304 | beautynailhairsalons | ❓ (une 2e page existe : 102573512366310) |
+| Ouverture | 2021 · entreprise dirigée par une femme | AfricaBizInfo | ❓ |
+| Équipements | Wi-Fi, toilettes, parking, accessible, adapté aux enfants · paiement espèces / sans contact | AfricaBizInfo | ❓ |
+| Tarifs | Non publiés | — | ❓ à fournir |
+| E-mail / site officiel | Aucun trouvé | — | ⚠️ |
+| Logo | Existant | Gérant | ⏳ en attente |
+
+### ⚠️ Horaires : deux versions différentes en ligne
+
+| Jour | Version A (Google / AfricaBizInfo) | Version B (Facebook / beautynailhairsalons) |
 |---|---|---|
-| Nom | Maître Coupe | ✅ |
-| Ville / quartier | Yaoundé — **Nkolmesseng** | ✅ (donné par le gérant) |
-| Pays / devise | Cameroun — **FCFA** — indicatif **+237** | ✅ |
-| Téléphone | **+237 6 57 75 58 68** — trouvé dans 2 annuaires (Pages Jaunes, AfricaBizInfo) | ✅ probable, WhatsApp ❓ |
-| Pages Facebook | **Deux pages** référencées par les annuaires : identifiants `901322259739304` (« Maître Coupe ») et `102573512366310` (« Maitre Coupe ») | ❓ laquelle est l'officielle ? |
-| Autres annuaires | beautynailhairsalons.com, findglocal.com (copies des pages Facebook), africabizinfo.com | ℹ️ |
-| Google Maps / Instagram / TikTok | Rien trouvé | ⚠️ |
-| Site actuel | maitre-coupe.netlify.app | ✅ |
-| Logo | Existant, envoyé par le gérant | ⏳ en attente |
-| Couleurs | **Noir & or** | ✅ |
+| Lundi | 07:00 – 21:00 | 11:00 – 21:00 |
+| Mardi → Samedi | 07:00 – 21:00 | 09:30 – 21:00 |
+| Dimanche | 12:00 – 21:30 | 11:00 – 21:00 |
 
-**Ce que ça veut dire :** le salon a une petite présence (Facebook + annuaires), mais **dispersée** (deux pages Facebook)
-et sans fiche Google Maps. L'application doit donc
-aussi servir à **se faire trouver** (Google, partage WhatsApp, réseaux sociaux), pas seulement à réserver.
-
-**Contexte du marché à Yaoundé :**
-- Les « barbershops » modernes se multiplient (ex. Olézoa, Omnisport, Messamendongo) : l'image premium
-  (noir & or, photos de qualité, réservation en ligne) est un vrai avantage face à la concurrence.
-- Les clients communiquent surtout par **WhatsApp** et paient en **espèces, MTN Mobile Money ou Orange Money**.
-- Beaucoup de connexions sont lentes / forfaits limités : l'appli doit être **légère** et rapide sur téléphone.
+➡️ **Le salon doit confirmer les vrais horaires**, puis on les corrige aussi sur Google et Facebook (sinon les clients se déplacent pour rien).
 
 ---
 
-## 1. Vision
+## 2. Catalogue de prestations (base confirmée)
 
-Une application web (ouverte sur téléphone comme une appli) pour le salon **Maître Coupe** qui :
+Six univers, tirés de la présentation publique du salon. **Aucun prix, durée ni soin spécialisé ne sera publié sans validation du salon.**
 
-1. **Attire des clients** : vitrine du salon, tarifs, photos des coiffures.
-2. **Remplit l'agenda** : réservation en ligne 24h/24, sans appel.
-3. **Fidélise** : une communauté type réseau social où les clients partagent leurs looks.
-4. **Simplifie la gestion** : un espace administrateur pour tout piloter depuis un téléphone.
+| Univers | Ce qu'on sait | À préciser par le salon |
+|---|---|---|
+| 💇 **Coiffure mixte** | Hommes et femmes | Coupes, dégradés, barbe, tresses, défrisage, perruques… prix et durées |
+| ✨ **Soins du visage** | Soins esthétiques | Types de soins, prix, durées |
+| 🧖 **Hammam** | Détente | Formule seule / avec gommage, durée, prix |
+| 🌿 **Gommage corporel** | Exfoliation, soins du corps | Produits (savon noir, café, sucre…), prix |
+| 💅 **Manucure & pédicure** | Mains et pieds | Vernis simple / semi-permanent, prix |
+| 💆 **Massages** | Bien-être | Types (relaxant, dos…), durées, prix |
+
+**Idée forte : les formules / forfaits**, très courants chez les concurrents (ex. « Hammam + gommage + pédicure »).
+Exemples à valider : *Rituel détente* (hammam + gommage + massage), *Beauté complète* (coiffure + manucure + pédicure), *Spécial mariée*.
+
+> Les photos d'illustration seront marquées « Images d'inspiration » tant qu'on n'a pas de vraies photos du salon.
 
 ---
 
-## 2. Les utilisateurs (rôles)
+## 3. Les utilisateurs (rôles)
 
 | Rôle | Qui | Ce qu'il peut faire |
 |---|---|---|
-| **Visiteur** | Toute personne sur le site | Voir le salon, les tarifs, la galerie, lire la communauté, **réserver sans compte** ✅ validé |
-| **Client** | Visiteur inscrit (e-mail + mot de passe) | + suivre/annuler ses rendez-vous, publier, aimer, commenter, gérer son profil |
-| **Administrateur** | Le gérant du salon | + gérer les rendez-vous, les prix, la galerie, modérer la communauté, régler le salon |
-| ❓ **Coiffeur** | Employés du salon | Voir uniquement *son* planning — **à décider (version 2 ?)** |
+| **Visiteur** | Toute personne | Voir le salon, les soins, les prix, la galerie, lire la communauté, **réserver sans compte** ✅ |
+| **Client** | Visiteur inscrit | + suivre/annuler ses RDV, publier, aimer, commenter, profil |
+| **Administrateur** | La gérante / le gérant | + gérer RDV, catalogue, prix, galerie, communauté, paramètres |
+| ❓ **Praticien** | Coiffeur·se, esthéticienne, masseur·se | Voir *son* planning — version 2 ? |
 
 ---
 
-## 3. Plan du site
+## 4. Plan du site
 
 ### Partie publique
 | Page | Adresse | Contenu |
 |---|---|---|
-| Accueil | `/` | Bannière, ouvert/fermé maintenant, prestations phares, dernières coiffures, aperçu communauté, horaires, itinéraire, WhatsApp |
-| Tarifs | `/prestations` | Toutes les prestations par catégorie (Homme, Femme, Enfant, Beauté…) avec prix et durée |
-| Coiffures | `/galerie` | Galerie photo des réalisations, filtre par catégorie, bouton « Je veux cette coiffure » |
-| Réserver | `/reserver` | 3 étapes : prestation → date & créneau libre → nom & téléphone. Confirmation + envoi WhatsApp au salon |
-| Communauté | `/communaute` | Fil d'actualité : publications avec photo, j'aime, commentaires |
-| Connexion | `/connexion` | Connexion / inscription |
-| Mon espace | `/mon-espace` | Mes rendez-vous (à venir / historique), mon profil et ma photo |
+| Accueil | `/` | Bannière « Coiffure · Beauté · Bien-être », ouvert/fermé maintenant, les 6 univers, formules, note **4,6★ Google**, réalisations, communauté, horaires, itinéraire « face Guiko Center », WhatsApp |
+| Nos soins & tarifs | `/prestations` | Catalogue par univers (Coiffure, Visage, Hammam, Gommage, Mains & pieds, Massages) + formules |
+| Galerie | `/galerie` | Réalisations (coiffures, ongles, ambiance du salon), filtre par univers |
+| Réserver | `/reserver` | 3 étapes : soin → date & créneau → nom & téléphone. Confirmation + message WhatsApp au salon |
+| Communauté | `/communaute` | Fil type réseau social : photos, j'aime, commentaires, publications du salon (promos) |
+| Le salon | `/salon` | Histoire, équipe, équipements (Wi-Fi, parking…), carte, horaires, avis Google |
+| Connexion / Mon espace | `/connexion`, `/mon-espace` | Compte client, mes RDV, mon profil |
 
 ### Espace administrateur (`/admin`)
 | Section | Contenu |
 |---|---|
-| Tableau de bord | RDV du jour, demandes à confirmer, chiffre d'affaires semaine / mois, graphique 7 jours, prestations les plus demandées |
-| Rendez-vous | Liste par jour, filtres (aujourd'hui, à venir, passés, statut), recherche, **confirmer / terminer / annuler**, contacter le client par WhatsApp ou appel, ajouter un RDV pris par téléphone |
-| Prestations & prix | Ajouter, modifier, masquer, supprimer une prestation (nom, catégorie, prix, durée, photo) |
-| Coiffures | Publier des photos de réalisations (titre, catégorie, prix « à partir de ») |
-| Communauté | Publier au nom du salon (promos, nouveautés), supprimer des publications/commentaires |
-| Paramètres | Nom, slogan, présentation, photo de couverture, adresse, téléphone, WhatsApp, réseaux sociaux, devise, horaires par jour, nombre de postes |
+| Tableau de bord | RDV du jour, demandes à confirmer, chiffre d'affaires semaine/mois, soins les plus demandés |
+| Rendez-vous | Par jour, filtres, confirmer / terminer / annuler, WhatsApp ou appel au client, ajout d'un RDV pris par téléphone |
+| Soins & tarifs | Ajouter / modifier / masquer un soin ou une formule (univers, prix, durée, photo) |
+| Galerie | Publier des photos de réalisations |
+| Communauté | Publier au nom du salon, modérer |
+| Paramètres | Nom, slogan, adresse, téléphone, WhatsApp, réseaux, horaires par jour, nombre de postes / cabines |
 
 ---
 
-## 4. Règles métier
+## 5. Règles métier
 
 **Rendez-vous**
 - Statuts : `En attente` → `Confirmé` → `Terminé` (ou `Annulé`).
-- Les créneaux proposés tiennent compte : des horaires du jour, de la durée de la prestation, des RDV déjà pris et du **nombre de postes** (ex. 2 coiffeurs = 2 clients en même temps).
-- Réservation possible jusqu'à 30 jours à l'avance, pas dans le passé.
-- Un client peut annuler son propre rendez-vous ; seul l'admin confirme.
+- Créneaux calculés selon : horaires du jour, durée du soin, RDV existants, **nombre de postes**.
+- ❓ Faut-il distinguer les ressources (ex. 2 fauteuils coiffure + 1 cabine hammam + 1 table de massage) ? → simple en V1 (un nombre global), détaillé en V2.
+- Réservation jusqu'à 30 jours à l'avance ; le client peut annuler ; l'admin confirme.
 
-**Communauté**
-- Il faut un compte pour publier, aimer ou commenter ; la lecture est libre.
-- Chacun peut supprimer ses propres contenus ; l'admin peut tout supprimer.
-- Les publications du salon portent un badge « Salon ».
+**Communauté** : compte obligatoire pour publier/aimer/commenter ; chacun supprime ses contenus ; l'admin modère tout ; badge « Salon » sur les publications officielles.
 
-**Prix** : en **FCFA** (format « 3 000 FCFA »). Téléphones au format camerounais (+237 6XX XX XX XX).
+**Format** : prix en **FCFA** (« 5 000 FCFA ») ; téléphones **+237 6XX XX XX XX**.
+
+**Honnêteté** : pas de prix, de soin ou de promesse de résultat publiés sans validation du salon ; images d'illustration signalées comme telles.
 
 ---
 
-## 5. Données (modèle)
+## 6. Données (modèle)
 
 ```
-profils        (id, email, nom, téléphone, photo, rôle client/admin)
-parametres     (une seule ligne : infos du salon + horaires)
-prestations    (id, nom, catégorie, description, prix, durée, photo, visible, ordre)
-coiffures      (id, titre, description, photo, prix_à_partir_de, catégorie, date)
+profils        (id, email, nom, téléphone, photo, rôle)
+parametres     (infos du salon + horaires + nombre de postes)
+univers        (Coiffure, Visage, Hammam, Gommage, Mains & pieds, Massages)
+prestations    (id, univers, nom, description, prix, durée, photo, visible, est_une_formule, ordre)
+galerie        (id, titre, univers, photo, prix_à_partir_de, date)
 rendez_vous    (id, client?, prestation, nom, téléphone, date, heure, durée, prix, note, statut)
-publications   (id, auteur, texte, photo, date)
-likes          (publication, utilisateur)
-commentaires   (id, publication, auteur, texte, date)
+publications / likes / commentaires
 ```
 
 ---
 
-## 6. Choix techniques
+## 7. Choix techniques
 
 | Besoin | Choix | Pourquoi |
 |---|---|---|
-| Interface | **React + Vite + TypeScript** | Rapide, moderne, fonctionne très bien sur mobile |
-| Hébergement | **Netlify** (déjà en place : maitre-coupe.netlify.app) | Gratuit, déploiement automatique à chaque modification |
-| Base de données, comptes, photos | **Supabase** (gratuit pour démarrer) | Base partagée entre tous les appareils, sécurité par rôle |
-| Notifications | **Liens WhatsApp** pré-remplis | Pas de coût, canal le plus utilisé par les clients |
-| Visibilité | Balises Google (SEO local « coiffeur Nkolmesseng / Yaoundé »), aperçu joli quand on partage le lien sur WhatsApp | Le salon n'apparaît nulle part aujourd'hui |
-| Mobile | Appli installable sur l'écran d'accueil (PWA), images compressées | Connexions lentes, usage 100 % téléphone |
-| Mode démo | Données dans le navigateur | Pour tester l'appli avant de configurer Supabase |
-
-Organisation du code :
-```
-src/
-  pages/        pages publiques (Accueil, Tarifs, Galerie, Réserver, Communauté…)
-  admin/        pages de l'espace administrateur
-  components/   éléments réutilisables (menu, cartes, fenêtres, publication…)
-  context/      utilisateur connecté, paramètres du salon
-  lib/          accès aux données (Supabase ou démo), calcul des créneaux, utilitaires
-supabase/       script de création de la base + règles de sécurité
-docs/           ce cahier des charges
-```
+| Interface | React + Vite + TypeScript | Rapide et fluide sur téléphone |
+| Hébergement | Netlify (maitre-coupe.netlify.app) | Déjà en place, gratuit |
+| Base de données, comptes, photos | Supabase | Données partagées, sécurité par rôle |
+| Notifications | Liens WhatsApp pré-remplis | Canal n°1 des clients, gratuit |
+| Visibilité | SEO local (« institut de beauté Nkolmesseng », « hammam Yaoundé »…), aperçu soigné au partage WhatsApp, lien vers la fiche Google | Capter les recherches locales |
+| Mobile | Installable (PWA), images compressées | Connexions lentes, usage 100 % mobile |
 
 ---
 
-## 7. Plan de réalisation (étapes)
+## 8. Plan de réalisation
 
-| Étape | Contenu | Ce que tu pourras tester |
+| Étape | Contenu | Résultat testable |
 |---|---|---|
-| **1. Fondations** | Couleurs noir & or, logo, menu, pied de page, version mobile, mode démo | Naviguer dans le site vide sur ton téléphone |
-| **2. Vitrine** | Accueil (ouvert/fermé, bouton WhatsApp, itinéraire Nkolmesseng), Tarifs, Galerie | Montrer le site à des clients |
-| **3. Réservation** | Réservation sans compte en 3 étapes, calcul des créneaux libres, message WhatsApp au salon | Prendre un vrai rendez-vous |
-| **4. Espace admin** | Tableau de bord, gestion des RDV, prix, coiffures, paramètres | Gérer le salon depuis ton téléphone |
-| **5. Communauté** | Comptes clients, fil avec photos, j'aime, commentaires, modération | Inviter les premiers clients |
-| **6. Mise en ligne** | Base Supabase réelle, déploiement sur maitre-coupe.netlify.app, référencement Google | Le site officiel en ligne |
-| **7. Visibilité** (hors code, conseillé) | Créer la fiche **Google Business** du salon, page Facebook/Instagram/TikTok, lien du site dans la bio WhatsApp | Les clients te trouvent sur Google Maps |
+| **1. Fondations** | Identité noir & or + logo, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
+| **2. Vitrine** | Accueil, Nos soins & tarifs (6 univers + formules), Galerie, Le salon | Montrer le site aux clients |
+| **3. Réservation** | Sans compte, créneaux libres, WhatsApp au salon | Prendre un vrai RDV |
+| **4. Admin** | Tableau de bord, RDV, soins & prix, galerie, paramètres | Gérer le salon depuis le téléphone |
+| **5. Communauté** | Comptes, fil photos, j'aime, commentaires, modération | Inviter les premiers clients |
+| **6. Mise en ligne** | Supabase réel, déploiement Netlify, SEO | Site officiel en ligne |
+| **7. Visibilité** (hors code) | Corriger horaires Google & Facebook, fusionner/clarifier les 2 pages Facebook, ajouter le lien du site partout, demander des avis Google aux clients satisfaits | Plus de clients via Google |
+
+**Version 2 (idées)** : choix du praticien, ressources par cabine, rappels automatiques, acompte **MTN MoMo / Orange Money**, carte de fidélité, cartes cadeaux (fort potentiel pour un institut), boutique de produits.
 
 ---
 
-## 8. Découpage en versions
+## 9. Décisions
 
-**Version 1 (MVP)** — tout ce qui est décrit aux sections 3 et 4.
+**Validé ✅** : FCFA / Cameroun · réservation sans compte · noir & or + logo existant · positionnement coiffure + beauté + bien-être.
 
-**Version 2 (idées)**
-- Comptes coiffeurs et choix du coiffeur à la réservation
-- Rappel automatique la veille (SMS / WhatsApp Business)
-- Paiement d'acompte (**MTN Mobile Money / Orange Money**, via un service comme CinetPay ou Notch Pay)
-- Programme de fidélité (ex. 10e coupe offerte)
-- Avis clients avec étoiles
-- Boutique de produits
-- Installation sur l'écran d'accueil (PWA) et notifications
+**À fournir / confirmer par le salon ❓**
+1. **Horaires réels** (version A ou B, ou autres).
+2. **Liste des soins avec prix et durées** pour les 6 univers, et les formules éventuelles.
+3. Le lien WhatsApp `wa.me/message/LSCNTSUAUE4CP1` fonctionne-t-il ? Quelle page Facebook est l'officielle ?
+4. **Équipe** : combien de postes / cabines peuvent travailler en même temps ?
+5. Communauté : publications clients visibles tout de suite ou validées par l'admin ?
+6. **Logo** (PNG transparent ou SVG) et **vraies photos** du salon et des réalisations.
 
 ---
 
-## 9. Décisions et questions
-
-**Validé ✅**
-- Devise FCFA, Cameroun (Yaoundé, Nkolmesseng)
-- Réservation sans compte autorisée
-- Identité noir & or, avec le logo existant
-
-**Encore à décider ❓**
-1. Le numéro **+237 6 57 75 58 68** est-il aussi le **WhatsApp** ? Laquelle des **deux pages Facebook** est l'officielle (à lier depuis le site) ?
-2. **Coiffeurs** : combien de coiffeurs ? Le client choisit-il son coiffeur dès la version 1 ?
-3. **Communauté** : publications des clients visibles tout de suite, ou validées par l'admin d'abord ?
-4. **Paiement Mobile Money** : version 1 ou plus tard ?
-5. **Infos du salon** : repère exact à Nkolmesseng (ex. « face à… »), horaires, liste des prestations avec prix, quelques photos du salon et de vos coiffures.
-6. **Logo** : en attente d'envoi (de préférence en PNG fond transparent ou SVG).
+### Sources
+- Facebook du salon via beautynailhairsalons.com : https://www.beautynailhairsalons.com/CM/Yaound%C3%A9/901322259739304/Ma%C3%AEtre-Coupe
+- AfricaBizInfo : https://www.africabizinfo.com/fr-CM/maitre-coupe-6-57-75-58-68
+- Pages Jaunes Yaoundé : https://www.pagesjaunes.online/yaound%C3%A9/salons-de-coiffure
+- Concurrence : https://setalmaa.com/instituts-beaute-et-bien-etre-notre-selection-despaces-pour-se-faire-chouchouter/ · https://www.beautynailhairsalons.com/CM/Yaound%C3%A9/38748-3
