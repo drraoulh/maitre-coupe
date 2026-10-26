@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound'
 import AdminLayout from './admin/AdminLayout'
 import Dashboard from './admin/Dashboard'
 import Appointments from './admin/Appointments'
+import Clients from './admin/Clients'
 import ServicesAdmin from './admin/ServicesAdmin'
 import GalleryAdmin from './admin/GalleryAdmin'
 import PostsAdmin from './admin/PostsAdmin'
@@ -37,6 +38,7 @@ export default function App() {
       <Route path="admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
         <Route index element={<Dashboard />} />
         <Route path="rendez-vous" element={<Appointments />} />
+        <Route path="clients" element={<Clients />} />
         <Route path="prestations" element={<ServicesAdmin />} />
         <Route path="coiffures" element={<GalleryAdmin />} />
         <Route path="publications" element={<PostsAdmin />} />

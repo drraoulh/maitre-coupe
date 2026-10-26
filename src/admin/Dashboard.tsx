@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
 import { useLoad } from '../lib/useLoad'
-import { STATUS_LABELS, bookingRef, formatDate, formatDuration, formatPrice, parseISODate, toISODate } from '../lib/utils'
+import { STATUS_LABELS, addDays, bookingRef, formatDate, whatsappLink, formatDuration, formatPrice, parseISODate, toISODate } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Empty, Spinner } from '../components/ui'
 import { ApptActions } from './apptActions'
@@ -15,6 +15,23 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [codeErr, setCodeErr] = useState('')
+  const [sent, setSent] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('mc_rappels') ?? '[]') as string[]
+    } catch {
+      return []
+    }
+  })
+  function markSent(id: string) {
+    const next = [...new Set([...sent, id])].slice(-300)
+    setSent(next)
+    try {
+      localStorage.setItem('mc_rappels', JSON.stringify(next))
+    } catch {
+      /* rien */
+    }
+  }
+
 
   if (loading) return <Spinner />
   const all = data ?? []
@@ -29,7 +46,8 @@ export default function Dashboard() {
   const todays = live.filter((a) => a.date === today).sort((a, b) => a.time.localeCompare(b.time))
   const pending = all.filter((a) => a.status === 'pending' && a.date >= today).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const earned = (list: typeof all) => list.filter((a) => a.status === 'done' || a.status === 'confirmed').reduce((s, a) => s + a.price, 0)
-  const week = live.filter((a) => a.date >= weekStartISO && a.date <= today)
+  const weekEndISO = addDays(weekStartISO, 6)
+  const week = live.filter((a) => a.date >= weekStartISO && a.date <= weekEndISO)
   const month = live.filter((a) => a.date.startsWith(monthPrefix))
 
   const counts = new Map<string, number>()
@@ -46,6 +64,9 @@ export default function Dashboard() {
   })
   const max7 = Math.max(1, ...next7.map((d) => d.n))
 
+  // Rappels WhatsApp pour les clients de demain (mémorisés sur cet appareil une fois envoyés)
+  const tomorrow = addDays(today, 1)
+  const reminders = live.filter((a) => a.date === tomorrow).sort((x, y) => x.time.localeCompare(y.time))
   function findCode(e: React.FormEvent) {
     e.preventDefault()
     const wanted = code.trim().toUpperCase().replace(/^MC-?/, '')
@@ -86,6 +107,36 @@ export default function Dashboard() {
       </div>
 
       <div className="dash-grid">
+        {reminders.length > 0 && (
+          <section className="card card-pad reminders">
+            <div className="row-between">
+              <h2><Icon name="bell" size={18} /> Rappels pour demain</h2>
+              <span className="muted small">{reminders.filter((a) => sent.includes(a.id)).length}/{reminders.length} envoyés</span>
+            </div>
+            <p className="muted small">Un message WhatsApp la veille réduit les oublis. Touchez « Rappeler » pour chaque client.</p>
+            {reminders.map((a) => {
+              const msg = `Bonjour ${a.client_name} 👋, petit rappel de ${settings.name} : votre rendez-vous « ${a.service_name} » est demain à ${a.time} (code ${bookingRef(a.id)}). Adresse : ${settings.address}, ${settings.city}. À demain !`
+              const done = sent.includes(a.id)
+              return (
+                <div key={a.id} className={`pending-row ${done ? 'faded' : ''}`}>
+                  <div>
+                    <strong>{a.time} · {a.client_name}</strong>
+                    <span className="muted small">{a.service_name} · {a.client_phone}</span>
+                  </div>
+                  <a
+                    className={`btn btn-sm ${done ? 'btn-ghost' : 'btn-whatsapp'}`}
+                    href={whatsappLink(a.client_phone, msg)}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => markSent(a.id)}
+                  >
+                    <Icon name={done ? 'check' : 'whatsapp'} size={16} /> {done ? 'Envoyé' : 'Rappeler'}
+                  </a>
+                </div>
+              )
+            })}
+          </section>
+        )}
         <section className="card card-pad">
           <div className="row-between">
             <h2>Planning du jour</h2>

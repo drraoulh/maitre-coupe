@@ -2,6 +2,10 @@ import type {
   Appointment, AppointmentStatus, BusySlot, Hairstyle, NewAppointment, Post, Profile, Service, Settings,
 } from '../types'
 
+export type AppointmentPatch = Partial<
+  Pick<Appointment, 'service_id' | 'service_name' | 'price' | 'duration' | 'client_name' | 'client_phone' | 'date' | 'time' | 'note'>
+>
+
 /** Contrat commun entre le mode démo (navigateur) et le mode Supabase (vraie base). */
 export interface Api {
   mode: 'demo' | 'supabase'
@@ -33,6 +37,7 @@ export interface Api {
   createAppointment(input: NewAppointment): Promise<Appointment>
   listAppointments(): Promise<Appointment[]> // admin : tous ; client : les siens
   updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<void>
+  updateAppointment(id: string, patch: AppointmentPatch): Promise<void> // admin : déplacer / corriger
 
   // Validation par le personnel du salon, sans compte, avec le code du salon
   getAppointmentWithPin(id: string, pin: string): Promise<Appointment>

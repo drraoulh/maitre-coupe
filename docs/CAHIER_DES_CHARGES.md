@@ -164,7 +164,7 @@ publications / likes / commentaires
 | **1. Fondations** ✅ | Identité aux couleurs du salon + logo + photo plein cadre, menu, pied de page, mobile, mode démo | Naviguer sur téléphone |
 | **2. Vitrine** ✅ | Accueil, Nos soins & tarifs (6 univers + formules), Galerie, Le salon | Montrer le site aux clients |
 | **3. Réservation** ✅ | Sans compte, créneaux libres, WhatsApp au salon | Prendre un vrai RDV |
-| **4. Admin** | Tableau de bord, RDV, soins & prix, galerie, paramètres | Gérer le salon depuis le téléphone |
+| **4. Admin** ✅ | Tableau de bord, RDV, soins & prix, galerie, paramètres | Gérer le salon depuis le téléphone |
 | **5. Communauté** | Comptes, fil photos, j'aime, commentaires, modération | Inviter les premiers clients |
 | **6. Mise en ligne** | Supabase réel, déploiement Netlify, SEO | Site officiel en ligne |
 | **7. Visibilité** (hors code) | Corriger horaires Google & Facebook, fusionner/clarifier les 2 pages Facebook, ajouter le lien du site partout, demander des avis Google aux clients satisfaits | Plus de clients via Google |

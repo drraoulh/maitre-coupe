@@ -9,6 +9,7 @@ import { Avatar, Brand } from '../components/ui'
 const LINKS = [
   { to: '/admin', label: 'Tableau de bord', icon: 'chart', end: true },
   { to: '/admin/rendez-vous', label: 'Rendez-vous', icon: 'calendar' },
+  { to: '/admin/clients', label: 'Clients', icon: 'user' },
   { to: '/admin/prestations', label: 'Soins & prix', icon: 'tag' },
   { to: '/admin/coiffures', label: 'Modèles (galerie)', icon: 'image' },
   { to: '/admin/publications', label: 'Communauté', icon: 'users' },
@@ -87,6 +88,26 @@ export default function AdminLayout() {
         <div className="admin-content">
           <Outlet />
         </div>
+        <nav className="admin-tabbar" aria-label="Navigation administration">
+          {[
+            { to: '/admin', label: 'Accueil', icon: 'chart', end: true },
+            { to: '/admin/rendez-vous', label: 'RDV', icon: 'calendar' },
+            { to: '/admin/clients', label: 'Clients', icon: 'user' },
+            { to: '/admin/coiffures', label: 'Modèles', icon: 'image' },
+          ].map((l) => (
+            <NavLink key={l.to} to={l.to} end={l.end} className="tab">
+              <span className="tab-icon">
+                <Icon name={l.icon} size={20} />
+                {l.to === '/admin/rendez-vous' && pending > 0 && <span className="tab-badge">{pending}</span>}
+              </span>
+              <span>{l.label}</span>
+            </NavLink>
+          ))}
+          <button className="tab" onClick={() => setOpen(true)}>
+            <Icon name="menu" size={20} />
+            <span>Plus</span>
+          </button>
+        </nav>
       </div>
     </div>
   )

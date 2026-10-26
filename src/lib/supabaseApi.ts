@@ -124,6 +124,9 @@ export function createSupabaseApi(url: string, key: string): Api {
       check(await sb.from('appointments').update({ status }).eq('id', id))
     },
 
+    async updateAppointment(id, patch) {
+      check(await sb.from('appointments').update(patch).eq('id', id))
+    },
     async getAppointmentWithPin(id, pin) {
       const r = check(await sb.rpc('appointment_for_validation', { appt_id: id, p: pin })) as { error?: string; appointment?: Appointment }
       if (r.error || !r.appointment) throw new Error(r.error ?? 'Rendez-vous introuvable.')

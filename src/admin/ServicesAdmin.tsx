@@ -23,6 +23,20 @@ export default function ServicesAdmin() {
     }
   }
 
+  // Change l'ordre d'affichage : échange avec le voisin puis renumérote 1, 2, 3…
+  async function move(i: number, dir: -1 | 1) {
+    const list = [...(data ?? [])]
+    const j = i + dir
+    if (j < 0 || j >= list.length) return
+    ;[list[i], list[j]] = [list[j], list[i]]
+    try {
+      await Promise.all(list.map((x, k) => (x.position !== k + 1 ? api.saveService({ ...x, position: k + 1 }) : null)))
+      reload()
+    } catch (e) {
+      toast(errorMessage(e), 'error')
+    }
+  }
+
   async function remove(s: Service) {
     if (!confirm(`Supprimer « ${s.name} » ?`)) return
     try {
@@ -50,14 +64,18 @@ export default function ServicesAdmin() {
         </Empty>
       ) : (
         <div className="admin-list">
-          {data.map((s) => (
+          {data.map((s, i) => (
             <div key={s.id} className={`card admin-item ${s.active ? '' : 'faded'}`}>
+              <div className="reorder">
+                <button className="icon-btn icon-btn-sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Monter"><Icon name="arrow-up" size={14} /></button>
+                <button className="icon-btn icon-btn-sm" onClick={() => move(i, 1)} disabled={i === data.length - 1} aria-label="Descendre"><Icon name="arrow-down" size={14} /></button>
+              </div>
               <Img src={s.image_url} alt={s.name} className="admin-thumb" />
               <div className="admin-item-info">
                 <strong>{s.name}</strong>
                 <span className="muted small">{s.category} · {formatDuration(s.duration)}</span>
               </div>
-              <span className="price">{formatPrice(s.price, settings.currency)}</span>
+              <span className="price">{s.price > 0 ? formatPrice(s.price, settings.currency) : 'Sur devis'}</span>
               <label className="switch" title={s.active ? 'Visible' : 'Masquée'}>
                 <input type="checkbox" checked={s.active} onChange={() => toggle(s)} />
                 <span />
@@ -112,7 +130,7 @@ function ServiceForm({ initial, currency, onClose, onSaved }: { initial: Partial
               {f.category && !CATEGORIES.includes(f.category) && <option value={f.category}>{f.category}</option>}
             </select>
           </label>
-          <label className="field"><span className="label">Prix ({currency})</span><input type="number" min={0} step={100} required value={f.price ?? 0} onChange={(e) => set('price', Number(e.target.value))} /></label>
+          <label className="field"><span className="label">Prix ({currency}) — 0 = sur devis</span><input type="number" min={0} step={100} required value={f.price ?? 0} onChange={(e) => set('price', Number(e.target.value))} /></label>
           <label className="field"><span className="label">Durée (minutes)</span><input type="number" min={5} step={5} required value={f.duration ?? 30} onChange={(e) => set('duration', Number(e.target.value))} /></label>
           <label className="field"><span className="label">Ordre d’affichage</span><input type="number" value={f.position ?? 0} onChange={(e) => set('position', Number(e.target.value))} /></label>
         </div>

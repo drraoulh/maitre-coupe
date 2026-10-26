@@ -258,6 +258,12 @@ export function createDemoApi(): Api {
       write('appointments', all.map((x) => (x.id === id ? { ...x, status } : x)))
     },
 
+    async updateAppointment(id, patch) {
+      requireAdmin()
+      const all = read<Appointment[]>('appointments', [])
+      if (!all.some((x) => x.id === id)) throw new Error('Rendez-vous introuvable.')
+      write('appointments', all.map((x) => (x.id === id ? { ...x, ...patch } : x)))
+    },
     async getAppointmentWithPin(id, pin) {
       checkPin(pin)
       const a = read<Appointment[]>('appointments', []).find((x) => x.id === id)

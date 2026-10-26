@@ -229,3 +229,33 @@ export function salonBookingMessage(
   lines.push('', `✅ Pour le salon — valider avec le code du salon : ${opts.origin}/valider/${a.id}`)
   return lines.join('\n')
 }
+
+/** Décale une date ISO de n jours. */
+export function addDays(iso: string, n: number): string {
+  const d = parseISODate(iso)
+  d.setDate(d.getDate() + n)
+  return toISODate(d)
+}
+
+/** Télécharge un tableau en CSV (séparateur « ; », lisible directement dans Excel en français). */
+export function downloadCSV(filename: string, rows: (string | number)[][]) {
+  const cell = (v: string | number) => {
+    const t = String(v ?? '')
+    return /[;"\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t
+  }
+  const csv = '\ufeff' + rows.map((r) => r.map(cell).join(';')).join('\r\n')
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+/** Clé de regroupement d'un client : son numéro sans espaces ni indicatif. */
+export function phoneKey(phone: string): string {
+  const d = phone.replace(/[^\d]/g, '')
+  return d.startsWith('237') && d.length === 12 ? d.slice(3) : d
+}
