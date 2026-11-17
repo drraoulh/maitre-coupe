@@ -163,7 +163,7 @@ export default function Booking() {
 
   return (
     <>
-      <PageHero eyebrow="Réservation" title="Prendre rendez-vous" text="Choisissez votre soin et votre créneau : c’est réservé. Sans compte, en moins d’une minute." image="/images/coupe-enfant.webp" />
+      <PageHero eyebrow="Réservation" title="Prendre rendez-vous" text="Choisissez un soin et un créneau. Sans compte, en moins d’une minute." image="/images/coupe-enfant.webp" />
       <div className="container page page-after-hero narrow">
         <ol className="stepper" aria-label="Étapes">
           {['Soin', 'Créneau', 'Coordonnées'].map((l, i) => (

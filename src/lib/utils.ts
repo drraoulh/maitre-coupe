@@ -259,3 +259,21 @@ export function phoneKey(phone: string): string {
   const d = phone.replace(/[^\d]/g, '')
   return d.startsWith('237') && d.length === 12 ? d.slice(3) : d
 }
+
+/** Regroupe les jours consécutifs aux mêmes horaires : « Lundi – samedi : 07:00 – 21:00 ». */
+export function groupedHours(hours: { open: string; close: string; closed: boolean }[]): { days: string; time: string }[] {
+  const order = [1, 2, 3, 4, 5, 6, 0]
+  const label = (d: number) => DAY_NAMES[d]
+  const value = (d: number) => (hours[d].closed ? 'Fermé' : `${hours[d].open} – ${hours[d].close}`)
+  const out: { days: string; time: string }[] = []
+  let start = order[0]
+  for (let i = 1; i <= order.length; i++) {
+    const prev = order[i - 1]
+    const cur = order[i]
+    if (cur === undefined || value(cur) !== value(prev)) {
+      out.push({ days: start === prev ? label(start) : `${label(start)} – ${label(prev).toLowerCase()}`, time: value(prev) })
+      start = cur
+    }
+  }
+  return out
+}

@@ -7,7 +7,6 @@ import { useLoad } from '../lib/useLoad'
 import { DAY_NAMES, formatDuration, formatPrice, toMinutes, whatsappLink } from '../lib/utils'
 import { Icon } from '../components/Icon'
 import { Avatar, Img } from '../components/ui'
-import { LogoMark } from '../components/LogoMark'
 
 export default function Home() {
   const { settings } = useApp()
@@ -16,136 +15,110 @@ export default function Home() {
   const posts = useLoad(() => api.listPosts())
 
   useEffect(() => {
-    document.title = `${settings.name} — Coiffure, beauté & bien-être à ${settings.city}`
+    document.title = `${settings.name} — Coiffure, beauté et bien-être à ${settings.city}`
   }, [settings.name, settings.city])
 
   const now = new Date()
   const today = settings.hours[now.getDay()]
   const nowMin = now.getHours() * 60 + now.getMinutes()
   const isOpen = !today.closed && nowMin >= toMinutes(today.open) && nowMin < toMinutes(today.close)
+  const nextOpen = settings.hours[(now.getDay() + (nowMin >= toMinutes(today.close) ? 1 : 0)) % 7].open
   const featured = (services.data ?? []).filter((s) => s.active).slice(0, 6)
   const gallery = (styles.data ?? []).slice(0, 6)
+  const latest = (posts.data ?? []).slice(0, 3)
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${settings.name} ${settings.address} ${settings.city}`)}`
+  const [first, ...rest] = settings.name.split(' ')
 
   return (
     <>
       <section className="hero">
-        {settings.hero_image ? (
-          <img className="hero-bg" src={settings.hero_image} alt="" />
-        ) : (
-          <picture>
-            <source media="(min-width: 900px)" srcSet="/images/salon-interieur.webp" />
-            <img className="hero-bg" src="/images/coupe-enfant.webp" alt={`Le salon ${settings.name}`} />
-          </picture>
-        )}
-        <div className="hero-overlay" />
-        <div className="container hero-content">
+        <div className="container hero-grid">
           <div className="hero-text">
-            <span className={`pill ${isOpen ? 'pill-open' : 'pill-closed'}`}>
-              <span className="dot" /> {isOpen ? `Ouvert · jusqu’à ${today.close}` : `Fermé · ouvre à ${settings.hours[(now.getDay() + (nowMin >= toMinutes(today.close) ? 1 : 0)) % 7].open}`}
-            </span>
-            <br />
-            <span className="hero-eyebrow">Coiffure · Institut de beauté · Bien-être</span>
-            <h1>{settings.name}</h1>
-            {settings.tagline && <p className="hero-slogan">{settings.tagline}</p>}
-            <p className="hero-tagline">
-              <Icon name="pin" size={18} /> {settings.address}, {settings.city}
+            <p className={`hero-status ${isOpen ? 'is-open' : ''}`}>
+              <span className="dot" aria-hidden="true" />
+              {isOpen ? `Ouvert aujourd’hui jusqu’à ${today.close}` : `Fermé pour le moment, ouverture à ${nextOpen}`}
+            </p>
+            <h1 className="wordmark" aria-label={settings.name}>
+              <span>{first}</span>
+              {rest.length > 0 && <span>{rest.join(' ')}</span>}
+            </h1>
+            <p className="hero-lede">
+              {settings.tagline}. Coiffure, soins du visage, hammam et massages à Nkolmesseng, face à Guiko Center.
             </p>
             <div className="hero-actions">
-              <Link to="/reserver" className="btn btn-gold btn-lg">
-                <Icon name="calendar" /> Prendre rendez-vous
-              </Link>
+              <Link to="/reserver" className="btn btn-gold btn-lg">Réserver un soin</Link>
               {settings.whatsapp && (
-                <a className="btn btn-light btn-lg" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, je souhaite prendre rendez-vous.`)} target="_blank" rel="noreferrer">
+                <a className="btn btn-quiet btn-lg" href={whatsappLink(settings.whatsapp, `Bonjour ${settings.name}, je souhaite prendre rendez-vous.`)} target="_blank" rel="noreferrer">
                   <Icon name="whatsapp" /> WhatsApp
                 </a>
               )}
             </div>
             {settings.google_rating > 0 && (
-              <a className="rating" href={settings.google_url || '#'} target="_blank" rel="noreferrer">
+              <a className="hero-rating" href={settings.google_url || '#'} target="_blank" rel="noreferrer">
                 <span className="stars" aria-hidden="true">★★★★★</span>
-                <strong>{settings.google_rating.toLocaleString('fr-FR')}/5</strong>
-                <span>· {settings.google_reviews} avis Google</span>
+                {settings.google_rating.toLocaleString('fr-FR')} sur 5 d’après {settings.google_reviews} avis Google
               </a>
             )}
           </div>
-          {!settings.hero_image && (
-            <div className="hero-card" aria-hidden="true">
-              <img src="/images/coupe-enfant.webp" alt="" />
-              <div className="hero-badge">
-                {settings.logo_url ? <img src={settings.logo_url} alt="" width={40} height={40} /> : <LogoMark size={40} className="hero-badge-logo" />}
-                <span>
-                  <strong>Petits & grands</strong>
-                  <span className="muted">Coiffure mixte</span>
-                </span>
-              </div>
-            </div>
-          )}
+          <figure className="hero-window">
+            <img src={settings.hero_image || '/images/coupe-enfant.webp'} alt={`Une coupe enfant chez ${settings.name}`} />
+          </figure>
         </div>
-        <svg className="hero-wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 48h1440V18c-160 18-360 30-720 14S160 6 0 22Z" fill="currentColor" />
-        </svg>
       </section>
 
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">Nos univers</span>
-              <h2>Prenez soin de vous, de la tête aux pieds</h2>
-            </div>
-            <Link to="/prestations" className="link-arrow">Soins & tarifs <Icon name="arrow" size={16} /></Link>
-          </div>
-          <div className="univers-grid">
+          <h2 className="section-title">Ce que nous faisons</h2>
+          <ul className="index-list">
             {UNIVERS.map((u) => (
-              <Link key={u.name} to={`/prestations?univers=${encodeURIComponent(u.name)}`} className="univers-card">
-                <span className="univers-icon"><Icon name={u.icon} size={26} /></span>
-                <strong>{u.name}</strong>
-                <span className="muted small">{u.text}</span>
-              </Link>
+              <li key={u.name}>
+                <Link to={`/prestations?univers=${encodeURIComponent(u.name)}`} className="index-row">
+                  <span className="index-name">{u.name}</span>
+                  <span className="index-text">{u.text}</span>
+                  <span className="index-go" aria-hidden="true"><Icon name="arrow" size={18} /></span>
+                </Link>
+              </li>
             ))}
-          </div>
-          <div className="extras">
-            {EXTRAS.map((e) => (
-              <Link key={e.name} to={`/prestations?univers=${encodeURIComponent(e.name)}`} className="extra">
-                <span className="extra-icon"><Icon name={e.icon} size={20} /></span>
-                <span>
-                  <strong>{e.name}</strong>
-                  <span className="muted small">{e.text}</span>
-                </span>
-              </Link>
+          </ul>
+          <p className="index-more">
+            Et aussi :{' '}
+            {EXTRAS.map((e, i) => (
+              <span key={e.name}>
+                <Link to={`/prestations?univers=${encodeURIComponent(e.name)}`}>{e.name.toLowerCase()}</Link>
+                {i < EXTRAS.length - 2 ? ', ' : i === EXTRAS.length - 2 ? ' et ' : '.'}
+              </span>
             ))}
-          </div>
+          </p>
+        </div>
+      </section>
+
+      <section className="container photo-band" aria-label="Le salon">
+        <img src="/images/salon-interieur.webp" alt={`L’espace coiffure de ${settings.name}`} loading="lazy" />
+        <div className="photo-band-caption">
+          <p>Le plafond bleu ciel, les fauteuils rouges : bienvenue dans le salon.</p>
+          <Link to="/salon" className="text-link">Découvrir le salon</Link>
         </div>
       </section>
 
       {featured.length > 0 && (
-        <section className="section section-alt">
+        <section className="section">
           <div className="container">
             <div className="section-head">
-              <div>
-                <span className="eyebrow">À la carte</span>
-                <h2>Nos soins du moment</h2>
-              </div>
-              <Link to="/prestations" className="link-arrow">Tous les tarifs <Icon name="arrow" size={16} /></Link>
+              <h2 className="section-title">À la carte</h2>
+              <Link to="/prestations" className="text-link">Tous les tarifs</Link>
             </div>
-            <div className="grid grid-3">
+            <ul className="menu-list">
               {featured.map((s) => (
-                <article key={s.id} className="card service-card">
-                  <Img src={s.image_url} alt={s.name} className="service-img" />
-                  <div className="card-body">
-                    <span className="chip">{s.category}</span>
-                    <h3>{s.name}</h3>
-                    {s.description && <p className="muted small">{s.description}</p>}
-                    <div className="service-foot">
-                      <span className="price">{formatPrice(s.price, settings.currency)}</span>
-                      <span className="muted small"><Icon name="clock" size={14} /> {formatDuration(s.duration)}</span>
-                    </div>
-                    <Link to={`/reserver?service=${s.id}`} className="btn btn-ghost btn-sm btn-block">Réserver</Link>
-                  </div>
-                </article>
+                <li key={s.id}>
+                  <Link to={`/reserver?service=${s.id}`} className="menu-row">
+                    <span className="menu-name">{s.name}</span>
+                    <span className="menu-dots" aria-hidden="true" />
+                    <span className="menu-meta">{formatDuration(s.duration)}</span>
+                    <span className="menu-price">{s.price > 0 ? formatPrice(s.price, settings.currency) : 'Sur devis'}</span>
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
       )}
@@ -154,11 +127,8 @@ export default function Home() {
         <section className="section">
           <div className="container">
             <div className="section-head">
-              <div>
-                <span className="eyebrow">Réalisations</span>
-                <h2>Nos derniers modèles</h2>
-              </div>
-              <Link to="/galerie" className="link-arrow">Toute la galerie <Icon name="arrow" size={16} /></Link>
+              <h2 className="section-title">Derniers modèles</h2>
+              <Link to="/galerie" className="text-link">Toute la galerie</Link>
             </div>
             <div className="masonry">
               {gallery.map((h) => (
@@ -175,67 +145,45 @@ export default function Home() {
         </section>
       )}
 
-      <section className="section section-alt">
-        <div className="container">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">Communauté</span>
-              <h2>Le fil {settings.name}</h2>
+      {latest.length > 0 && (
+        <section className="section section-alt">
+          <div className="container">
+            <div className="section-head">
+              <h2 className="section-title">Dans la communauté</h2>
+              <Link to="/communaute" className="text-link">Voir le fil</Link>
             </div>
-            <Link to="/communaute" className="link-arrow">Voir le fil <Icon name="arrow" size={16} /></Link>
-          </div>
-          <div className="grid grid-3">
-            {(posts.data ?? []).slice(0, 3).map((p) => (
-              <Link to="/communaute" key={p.id} className="card mini-post">
-                {p.image_url && <Img src={p.image_url} alt="" className="mini-post-img" />}
-                <div className="card-body">
+            <div className="grid grid-3">
+              {latest.map((p) => (
+                <Link to="/communaute" key={p.id} className="mini-post">
+                  {p.image_url && <Img src={p.image_url} alt="" className="mini-post-img" />}
                   <div className="post-author">
-                    <Avatar name={p.author.full_name} url={p.author.avatar_url} size={32} />
+                    <Avatar name={p.author.full_name} url={p.author.avatar_url} size={28} />
                     <strong>{p.author.full_name}</strong>
-                    {p.author.role === 'admin' && <span className="badge-salon">Salon</span>}
                   </div>
                   <p className="clamp-3">{p.content}</p>
-                  <span className="muted small"><Icon name="heart" size={14} /> {p.like_count} · <Icon name="comment" size={14} /> {p.comments.length}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container about">
-          <div>
-            <span className="eyebrow">Le salon</span>
-            <h2>Bienvenue chez {settings.name}</h2>
-            <p className="lead">{settings.about}</p>
-            {(settings.salon_photo || settings.owner_photo) && (
-              <div className="about-photos">
-                {settings.salon_photo && (
-                  <figure>
-                    <Img src={settings.salon_photo} alt={`Cabine de soins ${settings.name}`} />
-                    <figcaption>Notre cabine de soins</figcaption>
-                  </figure>
-                )}
-                {settings.owner_photo && (
-                  <figure className="about-owner">
-                    <Img src={settings.owner_photo} alt={settings.owner_name || `Le gérant de ${settings.name}`} />
-                    <figcaption>{settings.owner_name || 'Votre Maître Coupe'}</figcaption>
-                  </figure>
-                )}
-              </div>
-            )}
-            <div className="about-actions">
-              <a className="btn btn-gold" href={mapsUrl} target="_blank" rel="noreferrer">
-                <Icon name="pin" /> Itinéraire
-              </a>
-              <Link className="btn btn-outline" to="/salon">
-                Découvrir le salon <Icon name="arrow" size={16} />
-              </Link>
+                </Link>
+              ))}
             </div>
           </div>
-          <div className="card hours-card">
-            <h3><Icon name="clock" /> Horaires</h3>
+        </section>
+      )}
+
+      <section className="section">
+        <div className="container visit">
+          <div>
+            <h2 className="section-title">Venir au salon</h2>
+            <p className="visit-address">
+              {settings.address}
+              <br />
+              {settings.city}
+            </p>
+            <div className="visit-actions">
+              <a className="btn btn-outline" href={mapsUrl} target="_blank" rel="noreferrer"><Icon name="pin" /> Itinéraire</a>
+              <a className="btn btn-quiet" href={`tel:${settings.phone.replace(/\s/g, '')}`}><Icon name="phone" /> {settings.phone}</a>
+            </div>
+          </div>
+          <div>
+            <h3 className="visit-sub">Horaires</h3>
             <ul className="hours">
               {[1, 2, 3, 4, 5, 6, 0].map((d) => (
                 <li key={d} className={d === now.getDay() ? 'today' : ''}>
@@ -244,7 +192,6 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <Link to="/reserver" className="btn btn-gold btn-block">Réserver un créneau</Link>
           </div>
         </div>
       </section>

@@ -26,7 +26,7 @@ export default function Salon() {
       <PageHero
         eyebrow="Le salon"
         title={`Bienvenue chez ${settings.name}`}
-        text={<>{settings.tagline} · {settings.address}, {settings.city}</>}
+        text={<>{settings.tagline}, à {settings.address}, {settings.city}.</>}
       >
         <div className="hero-actions">
           <Link to="/reserver" className="btn btn-gold"><Icon name="calendar" /> Réserver</Link>

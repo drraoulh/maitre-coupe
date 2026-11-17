@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { api } from '../lib/client'
-import { DAY_NAMES, whatsappLink } from '../lib/utils'
+import { groupedHours, whatsappLink } from '../lib/utils'
 import { Icon } from './Icon'
 import { Avatar, Brand } from './ui'
 
 const LINKS = [
-  { to: '/', label: 'Accueil', icon: 'home', end: true },
-  { to: '/prestations', label: 'Soins & tarifs', short: 'Tarifs', icon: 'tag' },
+  { to: '/', label: 'Accueil', icon: 'home', end: true, tabOnly: true },
+  { to: '/prestations', label: 'Soins et tarifs', short: 'Soins', icon: 'tag' },
   { to: '/galerie', label: 'Galerie', icon: 'image' },
   { to: '/salon', label: 'Le salon', icon: 'pin', menuOnly: true },
   { to: '/communaute', label: 'Communauté', icon: 'users' },
@@ -37,7 +37,7 @@ export function Layout() {
             <Brand />
           </Link>
           <nav className={`nav-links ${open ? 'open' : ''}`}>
-            {LINKS.map((l) => (
+            {LINKS.filter((l) => !l.tabOnly).map((l) => (
               <NavLink key={l.to} to={l.to} end={l.end} className="nav-link">
                 {l.label}
               </NavLink>
@@ -75,7 +75,7 @@ export function Layout() {
         <div className="container footer-grid">
           <div>
             <Brand />
-            <p className="muted footer-about">{settings.about}</p>
+            <p className="muted footer-about">{settings.tagline}. Coiffure, beauté et bien-être à {settings.city}.</p>
             <div className="socials">
               {settings.google_url && (
                 <a href={settings.google_url} target="_blank" rel="noreferrer" aria-label="Google"><Icon name="google" size={18} /></a>
@@ -91,8 +91,11 @@ export function Layout() {
             <h4>Contact</h4>
             <p className="footer-line"><Icon name="pin" size={16} /> {settings.address}, {settings.city}</p>
             <p className="footer-line">
-              <Icon name="phone" size={16} /> <a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a>
-              {settings.phone2 && <> · <a href={`tel:${settings.phone2.replace(/\s/g, '')}`}>{settings.phone2}</a></>}
+              <Icon name="phone" size={16} />
+              <span>
+                <a href={`tel:${settings.phone.replace(/\s/g, '')}`}>{settings.phone}</a>
+                {settings.phone2 && <><br /><a href={`tel:${settings.phone2.replace(/\s/g, '')}`}>{settings.phone2}</a></>}
+              </span>
             </p>
             {settings.email && (
               <p className="footer-line"><Icon name="mail" size={16} /> <a href={`mailto:${settings.email}`}>{settings.email}</a></p>
@@ -115,10 +118,10 @@ export function Layout() {
           <div>
             <h4>Horaires</h4>
             <ul className="hours">
-              {[1, 2, 3, 4, 5, 6, 0].map((d) => (
-                <li key={d} className={d === new Date().getDay() ? 'today' : ''}>
-                  <span>{DAY_NAMES[d]}</span>
-                  <span>{settings.hours[d].closed ? 'Fermé' : `${settings.hours[d].open} – ${settings.hours[d].close}`}</span>
+              {groupedHours(settings.hours).map((g) => (
+                <li key={g.days}>
+                  <span>{g.days}</span>
+                  <span>{g.time}</span>
                 </li>
               ))}
             </ul>
